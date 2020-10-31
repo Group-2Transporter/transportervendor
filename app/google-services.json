@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "302939809347",
+    "firebase_url": "https://eagleshippers-f384c.firebaseio.com",
+    "project_id": "eagleshippers-f384c",
+    "storage_bucket": "eagleshippers-f384c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:302939809347:android:18c5338d1eaa91426896f6",
+        "android_client_info": {
+          "package_name": "com.e.transportervendor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "302939809347-16h6lu6nmqho2nktqlok0iv3g636p0ta.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.e.transportervendor",
+            "certificate_hash": "fb1b93bdbaf80011e43872e1431a96cea0dfeab6"
+          }
+        },
+        {
+          "client_id": "302939809347-aqejtur02q9h1gqbtb359pb5tio2s4as.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCotoN-WKT4h3UhANITVUg8V67yZyRseyI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "302939809347-aqejtur02q9h1gqbtb359pb5tio2s4as.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
