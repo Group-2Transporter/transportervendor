@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Welcome">
+        <menu>
+            <item android:id="@+id/profile"
+                android:title="Profile"
+                android:iconTintMode="screen"
+                android:icon="@drawable/profile"/>
+            <item android:id="@+id/nav_home"
+                android:title="Home"
+                android:icon="@drawable/home_icon"
+                />
+            <item android:id="@+id/nav_market"
+                android:title="Market"
+                android:icon="@drawable/truck"
+                />
+            <item android:id="@+id/nav_history"
+                android:title="History"
+                android:icon="@drawable/history_icon"
+                />
+        </menu>
+    </item>
+
+    <item android:title="App Information">
+        <menu>
+            <item android:id="@+id/terms"
+                android:title="Terms and Condition"
+                android:icon="@drawable/terms"/>
+            <item android:id="@+id/privacy"
+                android:title="Privacy and Policy"
+                android:icon="@drawable/lock"/>
+            <item android:id="@+id/contact"
+                android:title="Contact Us"
+                android:icon="@drawable/call"/>
+            <item android:id="@+id/about"
+                android:title="About Us"
+                android:icon="@drawable/eagleshipperlogo"/>
+        </menu>
+    </item>
+    <item android:id="@+id/logout"
+        android:title="Log Out"
+        android:icon="@drawable/logout"/>
+
+</menu>
