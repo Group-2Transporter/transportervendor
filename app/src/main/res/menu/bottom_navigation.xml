@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Home"
+        android:icon="@drawable/home_icon"
+        android:id="@+id/nav_home"
+        />
+    <item android:title="Market"
+        android:icon="@drawable/truck"
+        android:id="@+id/nav_market"
+        />
+    <item android:title="History"
+        android:icon="@drawable/history_icon"
+        android:id="@+id/nav_history"
+        />
+
+</menu>
