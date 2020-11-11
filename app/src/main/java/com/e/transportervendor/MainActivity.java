@@ -11,15 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.e.transportervendor.databinding.ActivityMainBinding;
-import com.e.transportervendor.databinding.AddVehicleBinding;
 import com.e.transportervendor.fragment.HistoryFragment;
 import com.e.transportervendor.fragment.HomeFragment;
 import com.e.transportervendor.fragment.MarketFragment;
+import com.e.transportervendor.utility.InternetUtilityActivity;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -64,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(i);
                         break;
                     case R.id.about:
+                       Intent intent = new Intent(MainActivity.this,ManageVehicleActivity.class);
+                       startActivity(intent);
                         break;
                     case R.id.contact:
                         break;
@@ -112,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
                         selected = new MarketFragment();
                         break;
                     case R.id.nav_history:
-                        //binding.toolbar.setVisibility(View.GONE);
                         selected = new HistoryFragment();
                         break;
                 }

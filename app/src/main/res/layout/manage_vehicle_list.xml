@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    >
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:layout_marginTop="5dp"
+    android:elevation="20dp"
+    >
+
+        <ImageView
+            android:layout_alignParentStart="true"
+            android:layout_width="150dp"
+            android:layout_height="90dp"
+            android:src="@drawable/truckimgae"
+            android:id="@+id/ivVehicle"
+            />
+        <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/ivVehicle"
+            android:layout_centerHorizontal="true"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Vehicle Type"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="10dp"
+                android:id="@+id/tvVehicleName"
+                />
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Number Of Vehicles :"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_weight="0.8"
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="5"
+                    android:textColor="@color/black"
+                    android:layout_weight="0.2"
+                    android:id="@+id/tvVehicleNumber"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_width="25dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:id="@+id/ivMoreVert"
+            android:scaleType="centerCrop"
+            android:src="@drawable/more_vert"
+            />
+    </RelativeLayout>
+   <View
+       android:layout_width="wrap_content"
+       android:layout_height="1dp"
+       android:background="@color/blue"/>
+
+</LinearLayout>

@@ -11,11 +11,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.e.transportervendor.databinding.SplashBinding;
+import com.e.transportervendor.utility.InternetUtilityActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SplashActivity extends AppCompatActivity {
+    FirebaseUser curretUser ;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        curretUser = FirebaseAuth.getInstance().getCurrentUser();
         SplashBinding splash = SplashBinding.inflate(getLayoutInflater());
         setContentView(splash.getRoot());
         Handler handler = new Handler();
@@ -23,21 +28,29 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if(InternetUtilityActivity.isNetworkConnected(SplashActivity.this)) {
-                    parseIntent();
+                    if(curretUser != null)
+                        navigateUserToMainActivity();
+                    else
+                        navigateUserToLoginActivity();
                 }
                 else{
-                    AlertDialog ab = new AlertDialog.Builder(SplashActivity.this)
+                    final AlertDialog ab = new AlertDialog.Builder(SplashActivity.this)
                             .setCancelable(false)
                             .setTitle("Network Not Connected")
                             .setMessage("Please check your network connection")
                             .setPositiveButton("Retry", null)
                             .show();
-                    Button positive = ab.getButton(AlertDialog.BUTTON_POSITIVE);
+                    Button positive = ab.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
                     positive.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if(InternetUtilityActivity.isNetworkConnected(SplashActivity.this))
-                                parseIntent();
+                            if(InternetUtilityActivity.isNetworkConnected(SplashActivity.this)) {
+                                ab.dismiss();
+                                if (curretUser != null)
+                                    navigateUserToMainActivity();
+                                else
+                                    navigateUserToLoginActivity();
+                            }
                         }
                     });
                 }
@@ -45,8 +58,14 @@ public class SplashActivity extends AppCompatActivity {
         },2500);
     }
 
-    private void parseIntent(){
+    private void navigateUserToMainActivity(){
         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void navigateUserToLoginActivity(){
+        Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
     }

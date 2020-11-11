@@ -1,4 +1,4 @@
-package com.e.transportervendor;
+package com.e.transportervendor.utility;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
