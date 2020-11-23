@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         style="@style/toolbar"
         app:title="Manage Vehicles"
         app:titleTextColor="@color/white"

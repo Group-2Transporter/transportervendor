@@ -1,22 +1,31 @@
 package com.e.transportervendor.api;
 
+import com.e.transportervendor.bean.Lead;
 import com.e.transportervendor.bean.Transporter;
 import com.e.transportervendor.bean.Vehicle;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public class TransporterServices {
-    private final static String BASE_URL = "http://192.168.43.125:8080/";
     public static TransportApi transportApi;
 
     public static TransportApi getTransporterApiIntance() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(ServerAddress.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         if (transportApi == null)
@@ -28,8 +37,26 @@ public class TransporterServices {
         @GET("transporter/{transporterId}")
         public Call<Transporter> getTransporterVehicleList(@Path("transporterId") String transporterId);
 
-        @DELETE("vehicle/{vehicleId}/{transporterId}")
-        public Call<Vehicle> deleteTransporterVehicle(@Path("vehicleId")String vehicleId, @Path("transporterId")String transporterId);
+        @POST("transporter/update")
+        public Call<Transporter> updateTransporter(@Body Transporter transporter);
+
+        @Multipart
+        @POST("/transporter/")
+        public Call<Transporter> saveTransporter(
+                @Part MultipartBody.Part file,
+                @Part("transporterId") RequestBody transporterId,
+                @Part("type") RequestBody type,
+                @Part("name") RequestBody name,
+                @Part("contactNumber") RequestBody contactNumber,
+                @Part("address") RequestBody address,
+                @Part("gstNumber") RequestBody gstNumber,
+                @Part("token") RequestBody token,
+                @Part("rating") RequestBody rating);
+
+        @Multipart
+        @POST("/transporter/update/image")
+        public Call<Transporter> updateImageTransporter(@Part MultipartBody.Part file,@Part("transporterId") RequestBody transporterId);
 
     }
+
 }

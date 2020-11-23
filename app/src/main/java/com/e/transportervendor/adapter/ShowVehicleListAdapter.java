@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,10 +33,14 @@ public class ShowVehicleListAdapter extends RecyclerView.Adapter<ShowVehicleList
 
     @Override
     public void onBindViewHolder(@NonNull final VehicleListViewHolder holder, int position) {
-        Vehicle v = vehicleList.get(position);
-        Picasso.get().load(v.getImageUrl()).into(holder.vehicleListBinding.ivVehicle);
-        holder.vehicleListBinding.tvVehicleName.setText(v.getName());
-        holder.vehicleListBinding.tvVehicleNumber.setText(""+v.getCount());
+        try {
+            Vehicle v = vehicleList.get(position);
+            Picasso.get().load(v.getImageUrl()).into(holder.vehicleListBinding.ivVehicle);
+            holder.vehicleListBinding.tvVehicleName.setText(v.getName());
+            holder.vehicleListBinding.tvVehicleNumber.setText("" + v.getCount());
+        }catch (Exception e){
+            Toast.makeText(holder.itemView.getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -61,13 +66,17 @@ public class ShowVehicleListAdapter extends RecyclerView.Adapter<ShowVehicleList
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
-                            String title = menuItem.getTitle().toString();
-                            if(title.equals("Delete")){
-                               if(position!=RecyclerView.NO_POSITION && listner !=null)
-                                   listner.onItemClick(vehicle,position,"Delete");
-                            }else if (title.equals("Edit")){
-                                if(position!=RecyclerView.NO_POSITION && listner !=null)
-                                    listner.onItemClick(vehicle,position,"Edit");
+                            try {
+                                String title = menuItem.getTitle().toString();
+                                if (title.equals("Delete")) {
+                                    if (position != RecyclerView.NO_POSITION && listner != null)
+                                        listner.onItemClick(vehicle, position, "Delete");
+                                } else if (title.equals("Edit")) {
+                                    if (position != RecyclerView.NO_POSITION && listner != null)
+                                        listner.onItemClick(vehicle, position, "Edit");
+                                }
+                            }catch (Exception e){
+                                Toast.makeText(itemView.getContext(), ""+e.toString(), Toast.LENGTH_SHORT).show();
                             }
                             return true;
                         }

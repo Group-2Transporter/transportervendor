@@ -2,5 +2,15 @@
     <string name="app_name">TransporterVendor</string>
     <string name="open">open</string>
     <string name="close">close</string>
-
+    <string-array name="transporterType">
+        <item>Select category</item>
+        <item>Transporter company</item>
+        <item>Truk owner</item>
+        <item>Packer and movers</item>
+    </string-array>
+    <string name="internal_storage">Internal storage</string>
+    <string name="empty_directory">Empty Directory</string>
+    <string name="storage_removed">Storage was removed or unmounted</string>
+    <string name="choose_file">Select a file</string>
+    <string name="error_selecting_file">Error selecting File</string>
 </resources>

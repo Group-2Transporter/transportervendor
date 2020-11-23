@@ -9,7 +9,7 @@
         <item name="android:screenOrientation">portrait</item>
 
     </style>
-    
+
 
     
     <style parent="FirebaseUI" name="GreenTheme">
@@ -32,6 +32,19 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
         <item name="android:background">@color/blue</item>
+        <item name="titleTextColor">@color/white</item>
     </style>
 
+
+    <style name="confirm_load_textView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="text_view">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+    </style>
 </resources>

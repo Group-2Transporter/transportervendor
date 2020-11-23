@@ -1,0 +1,165 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        card_view:cardCornerRadius="12dp"
+        card_view:cardElevation="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:elevation="10dp"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/check_circle"
+                android:id="@+id/kis"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="18dp"/>
+            <TextView
+                android:id="@+id/tvDate"
+                style="@style/confirm_load_textView"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="3/12/2020"
+                android:layout_marginRight="5dp"
+                android:layout_below="@id/kis"
+                android:layout_alignParentEnd="true"/>
+
+            <LinearLayout
+                android:id="@+id/llLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="5dp"
+                    android:src="@drawable/location"
+                    android:layout_marginBottom="-3dp"/>
+
+                <TextView
+                    android:singleLine="true"
+                    android:id="@+id/tvAddress"
+                    style="@style/confirm_load_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:text="Source to Destination Add : "
+                    android:layout_marginBottom="-3dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/llLocation"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/llMaterialType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/llLocation"
+                    android:layout_marginLeft="38dp"
+                    android:baselineAligned="false">
+
+                    <TextView
+                        style="@style/confirm_load_textView"
+                        android:layout_width="wrap_content"
+                        android:text="Material : " />
+
+                    <TextView
+                        android:id="@+id/tvTypeOfMaterial"
+                        style="@style/confirm_load_textView"
+                        android:layout_width="wrap_content"
+                        android:text="Steel" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/llMaterialType"
+                    android:layout_marginLeft="38dp">
+
+                    <TextView
+                        style="@style/confirm_load_textView"
+                        android:layout_width="wrap_content"
+                        android:text="Client Name : "
+
+                        />
+
+                    <TextView
+                        android:id="@+id/tvUserName"
+                        style="@style/confirm_load_textView"
+                        android:layout_width="wrap_content"
+                        android:text="User of App" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/llName"
+                    android:layout_marginLeft="38dp">
+
+                    <TextView
+                        style="@style/confirm_load_textView"
+                        android:layout_width="wrap_content"
+                        android:text="Weight : "
+
+                        />
+
+                    <TextView
+                        android:id="@+id/tvWeight"
+                        style="@style/confirm_load_textView"
+                        android:layout_width="wrap_content"
+                        android:text="200" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/llName"
+                    android:layout_marginLeft="38dp">
+
+                    <TextView
+                        style="@style/confirm_load_textView"
+                        android:layout_width="wrap_content"
+                        android:text="Rate : "
+
+                        />
+
+                    <TextView
+                        android:id="@+id/tvAmount"
+                        style="@style/confirm_load_textView"
+                        android:layout_width="wrap_content"
+                        android:text="12000" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+            '
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>
