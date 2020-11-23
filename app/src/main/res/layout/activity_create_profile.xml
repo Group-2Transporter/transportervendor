@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:id="@+id/toolBar"
+        app:title="Create profile"
+        app:titleTextColor="@color/white"
+        android:background="@color/blue"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile"
+            android:layout_width="210dp"
+            android:layout_height="210dp"
+            android:layout_gravity="center"
+            android:paddingTop="30dp"
+            android:src="@drawable/userimage" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/eteditImage"
+            android:backgroundTint="@color/blue"
+            android:src="@drawable/ic_baseline_camera_alt_24"
+            android:layout_gravity="center"
+            android:layout_marginTop="-40dp"/>
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="@color/blue"
+            android:padding="10dp"
+            android:textSize="20sp"
+            android:id="@+id/transporterCategory"
+            android:entries="@array/transporterType"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/blue"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            />
+
+        <EditText
+            android:id="@+id/etUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="20dp"
+            android:drawableRight="@drawable/usernm"
+            android:drawablePadding="10dp"
+            android:hint="Transporter Name"
+            android:backgroundTint="@color/blue"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:padding="10dp"
+            android:textAlignment="textStart"/>
+
+        <EditText
+            android:id="@+id/etPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="@color/blue"
+            android:layout_marginRight="20dp"
+            android:drawableRight="@drawable/phone"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:drawablePadding="10dp"
+            android:inputType="number"
+            android:maxLength="10"
+            android:hint="Contact Number"
+            android:padding="10dp"
+            android:textAlignment="textStart"/>
+        <EditText
+            android:id="@+id/etGstNum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:backgroundTint="@color/blue"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:hint="Gst Number"
+            android:maxLength="14"
+            android:layout_marginTop="0dp"
+            android:visibility="gone"
+            android:padding="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"
+            android:text="Address"
+            android:id="@+id/tvAddress"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:elevation="8dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/et_background"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:padding="10dp"
+                android:backgroundTint="@color/blue"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:hint="House/Street No."
+                android:id="@+id/etStreetAdrees"
+                android:textAlignment="viewStart"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:padding="10dp"
+                android:backgroundTint="@color/blue"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:hint="City"
+                android:id="@+id/etCityAddress"
+                android:textAlignment="viewStart"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:backgroundTint="@color/blue"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:hint="State"
+                android:id="@+id/etStateAdress"
+                android:padding="10dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/btnSave"
+        android:text="Save"
+        android:background="@drawable/button_decorator"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        />
+
+</LinearLayout>
+</ScrollView>

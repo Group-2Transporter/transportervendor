@@ -1,0 +1,30 @@
+<RelativeLayout android:id="@+id/rl2"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_height="50dp"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView
+        android:layout_alignParentStart="true"
+        android:id="@+id/tvState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Maharastra"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/cLoaded"
+        android:layout_alignParentEnd="true"
+        android:layout_height="30dp"
+        android:layout_width="30dp"
+        android:src="@drawable/blank_check_box" />
+
+    <ImageView
+        android:id="@+id/checkLoaded"
+        android:layout_alignParentEnd="true"
+        android:layout_height="30dp"
+        android:layout_width="30dp"
+        android:src="@drawable/cheked_box"
+        android:visibility="gone" />
+</RelativeLayout>

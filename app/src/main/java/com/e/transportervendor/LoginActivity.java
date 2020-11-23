@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final InternetUtilityActivity internet = new InternetUtilityActivity();
-
+        try {
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
             List<AuthUI.IdpConfig> providers = Arrays.asList(
                     new AuthUI.IdpConfig.PhoneBuilder().build(),
@@ -35,6 +35,9 @@ public class LoginActivity extends AppCompatActivity {
                             .setLogo(R.drawable.eagleshipperlogo)
                             .build(),
                     RC_SIGN_IN);
+        }catch (Exception e){
+            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
         }
 
     @Override
@@ -45,11 +48,15 @@ public class LoginActivity extends AppCompatActivity {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == RESULT_OK) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                Intent in=new Intent(LoginActivity.this,MainActivity.class);
-                in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(in);
-                finish();
+                try {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    Intent in = new Intent(LoginActivity.this, MainActivity.class);
+                    in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(in);
+                    finish();
+                }catch (Exception e){
+                    Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(this,"Sign Failed",Toast.LENGTH_SHORT).show();
             }

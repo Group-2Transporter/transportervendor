@@ -19,6 +19,7 @@
                         android:layout_height="?attr/actionBarSize"
                         >'
                         <TextView
+                            android:id="@+id/tvTransporter"
                             android:gravity="center_vertical"
                             android:textColor="@color/white"
                             android:textSize="20sp"
