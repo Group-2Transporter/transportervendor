@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,7 @@ public class ChatActivity extends AppCompatActivity {
     String currentUserId;
     DatabaseReference firebaseDatabase;
     MessageAdapter adapter;
+    String leadId;
     ArrayList<Message>al;
     User user;
     @Override
@@ -60,34 +62,39 @@ public class ChatActivity extends AppCompatActivity {
             Intent in = getIntent();
             currentUserId = FirebaseAuth.getInstance().getUid();
             userId = (String) in.getCharSequenceExtra("userId");
+            leadId = (String) in.getCharSequenceExtra("leadId");
             UserService.UserApi userApi = UserService.getUserApiInstance();
-            Call<User> call = userApi.getUserById(userId);
-            if (InternetUtilityActivity.isNetworkConnected(this)) {
-                firebaseDatabase = FirebaseDatabase.getInstance().getReference();
-                call.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                        if (response.code() == 200) {
-                            user = response.body();
-                            binding.tvName.setText(user.getName());
-                            Picasso.get().load(user.getImageUrl()).into(binding.civUser);
+            if(InternetUtilityActivity.isNetworkConnected(this)) {
+                Call<User> call = userApi.getUserById(userId);
+                if (InternetUtilityActivity.isNetworkConnected(this)) {
+                    firebaseDatabase = FirebaseDatabase.getInstance().getReference();
+                    call.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            if (response.code() == 200) {
+                                user = response.body();
+                                binding.tvName.setText(user.getName());
+                                Picasso.get().load(user.getImageUrl()).into(binding.civUser);
+                            }
                         }
-                    }
 
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                            Toast.makeText(ChatActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(this, "please enable internet connection.", Toast.LENGTH_SHORT).show();
+                }
+                binding.ivBack.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                        Toast.makeText(ChatActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    public void onClick(View v) {
+                        finish();
                     }
                 });
-            } else {
-                Toast.makeText(this, "please enable internet connection.", Toast.LENGTH_SHORT).show();
+            }else{
+                getInternetAlert();
             }
-            binding.ivBack.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
         }catch (Exception e){
             Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -109,11 +116,11 @@ public class ChatActivity extends AppCompatActivity {
                     final String messageId = FirebaseDatabase.getInstance().getReference().push().getKey();
                     binding.etMessage.setText("");
                     final Message msg = new Message(messageId,currentUserId,userId,message,timeStamp);
-                    firebaseDatabase.child("Messages").child(currentUserId).child(userId).child(messageId).setValue(msg).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    firebaseDatabase.child("Messages").child(leadId).child(currentUserId).child(userId).child(messageId).setValue(msg).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                firebaseDatabase.child("Messages").child(userId).child(currentUserId).child(messageId).setValue(msg).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                firebaseDatabase.child("Messages").child(leadId).child(userId).child(currentUserId).child(messageId).setValue(msg).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
@@ -125,13 +132,13 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     });
                 } else
-                    Toast.makeText(ChatActivity.this, "please enable internet connection.", Toast.LENGTH_SHORT).show();
+                    getInternetAlert();
 
             }
         });
         al=new ArrayList<>();
 
-        firebaseDatabase.child("Messages").child(currentUserId).child(userId).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
+        firebaseDatabase.child("Messages").child(leadId).child(currentUserId).child(userId).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if(dataSnapshot.exists()){
@@ -169,9 +176,26 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    private void getInternetAlert() {
+        final androidx.appcompat.app.AlertDialog ab = new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Network Not Connected")
+                .setMessage("Please check your network connection")
+                .setPositiveButton("Retry", null)
+                .show();
+        Button positive = ab.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
+        positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(InternetUtilityActivity.isNetworkConnected(ChatActivity.this)) {
+                    ab.dismiss();
+                }
+            }
+        });
+    }
+
     private void sendNotification(final Message message){
         String token = user.getToken();
-
         try{
             RequestQueue queue = Volley.newRequestQueue(ChatActivity.this);
             String url = "https://fcm.googleapis.com/fcm/send";

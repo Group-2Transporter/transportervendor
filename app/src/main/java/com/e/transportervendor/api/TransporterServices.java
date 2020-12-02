@@ -20,7 +20,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
-public class TransporterServices {
+public class  TransporterServices {
     public static TransportApi transportApi;
 
     public static TransportApi getTransporterApiIntance() {

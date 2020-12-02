@@ -32,7 +32,8 @@ public class MessageAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        ChatListBinding binding = ChatListBinding.inflate(LayoutInflater.from(context));
+        ChatListBinding binding = ChatListBinding.inflate(LayoutInflater.from(parent.getContext()));
+        //ChatListBinding binding = ChatListBinding.inflate(LayoutInflater.from(parent.getContext()));
         final Message message = al.get(position);
         try {
             if (currentUser.equals(message.getFrom())) {

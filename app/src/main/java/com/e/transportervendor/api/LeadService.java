@@ -52,5 +52,8 @@ public class LeadService {
         @GET("lead/filter/all/{transporterId}")
         public Call<ArrayList<Lead>> getAllCreatedLeads(@Path("transporterId")String transporterId);
 
+        @DELETE("lead/{leadId}")
+        public Call<Lead> deleteLead(@Path("leadId")String leadId);
+
     }
 }
