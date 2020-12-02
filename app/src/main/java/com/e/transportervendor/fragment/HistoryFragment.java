@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.e.transportervendor.bean.Bid;
 import com.e.transportervendor.bean.Lead;
 import com.e.transportervendor.databinding.FilterAlertBinding;
 import com.e.transportervendor.databinding.HistoryFragmentBinding;
+import com.e.transportervendor.utility.InternetUtilityActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -58,10 +60,14 @@ public class HistoryFragment extends Fragment {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     String spin = spin = history.spinner.getSelectedItem().toString();
                     try {
-                        if (spin.equals("Completed Loads")) {
-                            getAllCompletedLeads();
-                        } else if (spin.equals("Pending Bids")) {
-                            getAllPendingBids();
+                        if(InternetUtilityActivity.isNetworkConnected(getContext())) {
+                            if (spin.equals("Completed Loads")) {
+                                getAllCompletedLeads();
+                            } else if (spin.equals("Pending Bids")) {
+                                getAllPendingBids();
+                            }
+                        }else{
+                            getInternetAlert();
                         }
                     }catch (Exception e){
                         Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -117,40 +123,46 @@ public class HistoryFragment extends Fragment {
                     try {
                         final ArrayList<Bid> bidList = response.body();
                         if (bidList != null) {
-                            final MarketListShowAdapter adapter = new MarketListShowAdapter(bidList, "pending");
+                            final MarketListShowAdapter adapter = new MarketListShowAdapter(bidList, "cancel");
                             history.rv.setAdapter(adapter);
                             history.rv.setLayoutManager(new LinearLayoutManager(getContext()));
                             adapter.onMarketViewClickLitner(new MarketListShowAdapter.OnRecyclerViewClickListner() {
                                 @Override
                                 public void onItemClick(Lead lead, int positon) {
-                                    //
+                                    //lead code
                                 }
+
                                 @Override
-                                public void onMoreSelected(final Bid bid, final int position) {
+                                public void onCancelButton(final Bid bid, final int position) {
                                     AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
-                                    ab.setMessage("Are you sure ?");
+                                    ab.setMessage("Are you sure to Cancel bid ?");
                                     ab.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            Call<Bid> call = bidApi.deleteBid(bid.getBidId());
-                                            call.enqueue(new Callback<Bid>() {
-                                                @Override
-                                                public void onResponse(Call<Bid> call, Response<Bid> response) {
-                                                    if (response.code() == 200) {
-                                                        try {
-                                                            Toast.makeText(getContext(), "Cancel Bid  Successfully", Toast.LENGTH_SHORT).show();
-                                                            bidList.remove(position);
-                                                            adapter.notifyDataSetChanged();
-                                                        }catch (Exception e){
-                                                            Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            if(InternetUtilityActivity.isNetworkConnected(getContext())) {
+                                                Call<Bid> call = bidApi.deleteBid(bid.getBidId());
+                                                call.enqueue(new Callback<Bid>() {
+                                                    @Override
+                                                    public void onResponse(Call<Bid> call, Response<Bid> response) {
+                                                        if (response.code() == 200) {
+                                                            try {
+                                                                Toast.makeText(getContext(), "Cancel Bid  Successfully", Toast.LENGTH_SHORT).show();
+                                                                bidList.remove(position);
+                                                                adapter.notifyDataSetChanged();
+                                                            } catch (Exception e) {
+                                                                Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                            }
                                                         }
                                                     }
-                                                }
-                                                @Override
-                                                public void onFailure(Call<Bid> call, Throwable t) {
-                                                    Toast.makeText(getContext(), "" + t, Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
+
+                                                    @Override
+                                                    public void onFailure(Call<Bid> call, Throwable t) {
+                                                        Toast.makeText(getContext(), "" + t, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }else{
+                                                getInternetAlert();
+                                            }
                                         }
                                     });
                                     ab.setNegativeButton("Cancel", null);
@@ -167,6 +179,23 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<Bid>> call, Throwable t) {
                 Toast.makeText(getContext(), ""+t, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void getInternetAlert(){
+        final androidx.appcompat.app.AlertDialog ab = new androidx.appcompat.app.AlertDialog.Builder(getContext())
+                .setCancelable(false)
+                .setTitle("Network Not Connected")
+                .setMessage("Please check your network connection")
+                .setPositiveButton("Retry", null)
+                .show();
+        Button positive = ab.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
+        positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(InternetUtilityActivity.isNetworkConnected(getContext())) {
+                    ab.dismiss();
+                }
             }
         });
     }

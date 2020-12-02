@@ -31,13 +31,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ManageVehicleActivity extends AppCompatActivity {
-    ManageVehicleBinding manageVehicleBinding ;
+    ManageVehicleBinding manageVehicleBinding;
     List<Vehicle> vehicleList;
     ShowVehicleListAdapter adapter;
     ProgressDialog pd;
     String currentUserId;
     TransporterServices.TransportApi transporterApi;
     VehicleService.VehicleApi vehicleApi;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,29 +56,29 @@ public class ManageVehicleActivity extends AppCompatActivity {
                 call.enqueue(new Callback<Transporter>() {
                     @Override
                     public void onResponse(final Call<Transporter> call, Response<Transporter> response) {
-                        Toast.makeText(ManageVehicleActivity.this, ""+response.code(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ManageVehicleActivity.this, "" + response.code(), Toast.LENGTH_SHORT).show();
                         if (response.code() == 200) {
                             try {
                                 Transporter t = response.body();
                                 vehicleList = t.getVehicle();
                                 pd.dismiss();
-                                if (vehicleList != null) {
-                                    adapter = new ShowVehicleListAdapter(vehicleList);
-                                    manageVehicleBinding.rv.setAdapter(adapter);
-                                    manageVehicleBinding.rv.setLayoutManager(new LinearLayoutManager(ManageVehicleActivity.this));
-                                    adapter.setOnRecyclerListener(new ShowVehicleListAdapter.OnRecyclerViewClick() {
-                                        @Override
-                                        public void onItemClick(final Vehicle vehicle, final int postion, final String status) {
-                                            if (status.equalsIgnoreCase("Delete")) {
-                                                AlertDialog.Builder ab = new AlertDialog.Builder(ManageVehicleActivity.this);
-                                                ab.setTitle("Delete");
-                                                ab.setMessage("Are You Sure ?");
-                                                ab.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        final ProgressDialog pd1 = new ProgressDialog(ManageVehicleActivity.this);
-                                                        pd1.setMessage("Delete Vehicles");
-                                                        pd1.show();
+                                adapter = new ShowVehicleListAdapter(vehicleList);
+                                manageVehicleBinding.rv.setAdapter(adapter);
+                                manageVehicleBinding.rv.setLayoutManager(new LinearLayoutManager(ManageVehicleActivity.this));
+                                adapter.setOnRecyclerListener(new ShowVehicleListAdapter.OnRecyclerViewClick() {
+                                    @Override
+                                    public void onItemClick(final Vehicle vehicle, final int postion, final String status) {
+                                        if (status.equalsIgnoreCase("Delete")) {
+                                            AlertDialog.Builder ab = new AlertDialog.Builder(ManageVehicleActivity.this);
+                                            ab.setTitle("Delete");
+                                            ab.setMessage("Are You Sure ?");
+                                            ab.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    final ProgressDialog pd1 = new ProgressDialog(ManageVehicleActivity.this);
+                                                    pd1.setMessage("Delete Vehicles");
+                                                    pd1.show();
+                                                    if (InternetUtilityActivity.isNetworkConnected(ManageVehicleActivity.this)) {
                                                         Call<Vehicle> call1 = vehicleApi.deleteTransporterVehicle(vehicle.getVehicelId(), currentUserId);
                                                         call1.enqueue(new Callback<Vehicle>() {
                                                             @Override
@@ -96,29 +97,29 @@ public class ManageVehicleActivity extends AppCompatActivity {
                                                                 pd1.dismiss();
                                                             }
                                                         });
+                                                    } else {
+                                                        getInternetAlert();
                                                     }
-                                                });
-                                                ab.setNegativeButton("Cancel", null);
-                                                ab.show();
-
-                                            } else if (status.equalsIgnoreCase("Edit")) {
-                                                try{
-                                                    Toast.makeText(ManageVehicleActivity.this, "hell", Toast.LENGTH_SHORT).show();
-                                                    Intent in = new Intent(ManageVehicleActivity.this,AddVehicleActivity.class);
-                                                    in.putExtra("vehicle", vehicle);
-                                                    startActivity(in);
-                                                }catch (Exception e){
-                                                    Toast.makeText(ManageVehicleActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
+                                            });
+                                            ab.setNegativeButton("Cancel", null);
+                                            ab.show();
+
+                                        } else if (status.equalsIgnoreCase("Edit")) {
+                                            try {
+                                                Toast.makeText(ManageVehicleActivity.this, "hell", Toast.LENGTH_SHORT).show();
+                                                Intent in = new Intent(ManageVehicleActivity.this, AddVehicleActivity.class);
+                                                in.putExtra("vehicle", vehicle);
+                                                startActivity(in);
+                                            } catch (Exception e) {
+                                                Toast.makeText(ManageVehicleActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         }
-                                    });
-                                }else{
-                                    Toast.makeText(ManageVehicleActivity.this, "Data Not Found", Toast.LENGTH_SHORT).show();
-                                    pd.dismiss();
-                                }
-                            }catch (Exception e){
-                                Toast.makeText(ManageVehicleActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            } catch (Exception e) {
+                                Toast.makeText(ManageVehicleActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -139,28 +140,32 @@ public class ManageVehicleActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                final AlertDialog ab = new AlertDialog.Builder(ManageVehicleActivity.this)
-                        .setCancelable(false)
-                        .setTitle("Network Not Connected")
-                        .setMessage("Please check your network connection")
-                        .setPositiveButton("Retry", null)
-                        .show();
-                Button positive = ab.getButton(AlertDialog.BUTTON_POSITIVE);
-                positive.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (InternetUtilityActivity.isNetworkConnected(ManageVehicleActivity.this)) {
-                            ab.dismiss();
-                        }
-                    }
-                });
+                getInternetAlert();
             }
-        }catch (Exception e){
-            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
         setSupportActionBar(manageVehicleBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void getInternetAlert() {
+        final AlertDialog ab = new AlertDialog.Builder(ManageVehicleActivity.this)
+                .setCancelable(false)
+                .setTitle("Network Not Connected")
+                .setMessage("Please check your network connection")
+                .setPositiveButton("Retry", null)
+                .show();
+        Button positive = ab.getButton(AlertDialog.BUTTON_POSITIVE);
+        positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (InternetUtilityActivity.isNetworkConnected(ManageVehicleActivity.this)) {
+                    ab.dismiss();
+                }
+            }
+        });
     }
 
 

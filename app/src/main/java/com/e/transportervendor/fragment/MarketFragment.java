@@ -42,83 +42,99 @@ public class MarketFragment extends Fragment {
     ArrayList<State> stateList;
     String currentUserId;
     String name;
+    ProgressDialog pd;
     MarketListShowAdapter adapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         market = MarketFragmentBinding.inflate(getLayoutInflater());
-        if(InternetUtilityActivity.isNetworkConnected(getContext())) {
+        if (InternetUtilityActivity.isNetworkConnected(getContext())) {
             try {
-                SharedPreferences sp = getActivity().getSharedPreferences("transporter",Context.MODE_PRIVATE);
-                name = sp.getString("name","");
+                SharedPreferences sp = getActivity().getSharedPreferences("transporter", Context.MODE_PRIVATE);
+                name = sp.getString("name", "");
                 leadApi = LeadService.getTransporterApiIntance();
                 currentUserId = FirebaseAuth.getInstance().getUid();
                 stateList = new ArrayList<>();
                 market.filter.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getFilterAlertDialog();
+                        if (InternetUtilityActivity.isNetworkConnected(getContext())) {
+                            getFilterAlertDialog();
+                        } else {
+                            getInternetAlert();
+                        }
                     }
                 });
-                getAllCreatedLeads(currentUserId);
+                if (InternetUtilityActivity.isNetworkConnected(getContext())) {
+                    getAllCreatedLeads(currentUserId);
+                } else {
+                    getInternetAlert();
+                }
             } catch (Exception e) {
                 Toast.makeText(getContext(), "" + e.toString(), Toast.LENGTH_SHORT).show();
             }
-        }else{
-            final androidx.appcompat.app.AlertDialog ab = new androidx.appcompat.app.AlertDialog.Builder(getContext())
-                    .setCancelable(false)
-                    .setTitle("Network Not Connected")
-                    .setMessage("Please check your network connection")
-                    .setPositiveButton("Retry", null)
-                    .show();
-            Button positive = ab.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
-            positive.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(InternetUtilityActivity.isNetworkConnected(getContext())) {
-                        ab.dismiss();
-                    }
-                }
-            });
+        } else {
+            getInternetAlert();
         }
         return market.getRoot();
+    }
+
+    private void getInternetAlert() {
+        final androidx.appcompat.app.AlertDialog ab = new androidx.appcompat.app.AlertDialog.Builder(getContext())
+                .setCancelable(false)
+                .setTitle("Network Not Connected")
+                .setMessage("Please check your network connection")
+                .setPositiveButton("Retry", null)
+                .show();
+        Button positive = ab.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
+        positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (InternetUtilityActivity.isNetworkConnected(getContext())) {
+                    ab.dismiss();
+                }
+            }
+        });
     }
 
     private void getAllCreatedLeads(final String currentUserId) {
         try {
             Call<ArrayList<Lead>> call = leadApi.getAllCreatedLeads(currentUserId);
+            pd = new ProgressDialog(getContext());
+            pd.setMessage("please wait...");
+            pd.show();
             call.enqueue(new Callback<ArrayList<Lead>>() {
-                @Override
                 public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
+                    pd.dismiss();
                     if (response.code() == 200) {
                         final ArrayList<Lead> bidList = response.body();
-                        if(bidList.size() != 0) {
-                            try {
-                                adapter = new MarketListShowAdapter(bidList);
-                                market.rv.setAdapter(adapter);
-                                market.rv.setLayoutManager(new LinearLayoutManager(getContext()));
-                                adapter.onMarketViewClickLitner(new MarketListShowAdapter.OnRecyclerViewClickListner() {
-                                    @Override
-                                    public void onItemClick(Lead lead, final int positon) {
-                                        BidBottomSheetFragment bottomSheetFragment = new BidBottomSheetFragment(lead, currentUserId, name,bidList,adapter,positon);
-                                        bottomSheetFragment.show(getFragmentManager(), "");
+                        try {
+                            adapter = new MarketListShowAdapter(bidList);
+                            market.rv.setAdapter(adapter);
+                            market.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                            adapter.onMarketViewClickLitner(new MarketListShowAdapter.OnRecyclerViewClickListner() {
+                                @Override
+                                public void onItemClick(Lead lead, final int positon) {
+                                    BidBottomSheetFragment bottomSheetFragment = new BidBottomSheetFragment(lead, currentUserId, name, bidList, adapter, positon);
+                                    bottomSheetFragment.show(getFragmentManager(), "");
+                                }
 
-                                    }
+                                @Override
+                                public void onCancelButton(Bid bid, int position) {
 
-                                    @Override
-                                    public void onMoreSelected(Bid bid, int position) {
-
-                                    }
-                                });
-                            }catch (Exception e){
-                                Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+                                }
+                            });
+                        } catch (Exception e) {
+                            Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    }else if(response.code() == 404){
+                    } else if (response.code() == 404) {
                         Toast.makeText(getContext(), "Match Bid Not Found", Toast.LENGTH_SHORT).show();
+                    }else if(response.code() == 500){
+                        Toast.makeText(getContext(), "Server not found", Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 @Override
                 public void onFailure(Call<ArrayList<Lead>> call, Throwable t) {
                     Toast.makeText(getContext(), "" + t, Toast.LENGTH_SHORT).show();
@@ -129,7 +145,6 @@ public class MarketFragment extends Fragment {
         }
     }
 
-    ProgressDialog pd;
     private void getFilterAlertDialog() {
         state = new ArrayList<>();
         state.add(new State("West Bengal"));
@@ -153,7 +168,7 @@ public class MarketFragment extends Fragment {
         final FilterAlertBinding filterAlert = FilterAlertBinding.inflate(LayoutInflater.from(getContext()));
         ab.setView(filterAlert.getRoot());
         ab.setCancelable(false);
-        final FilterAdapter adapter = new FilterAdapter(getContext(),state);
+        final FilterAdapter adapter = new FilterAdapter(getContext(), state);
         filterAlert.rv.setAdapter(adapter);
         filterAlert.ivCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,12 +180,9 @@ public class MarketFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 stateList = adapter.getSelectedState();
-                pd = new ProgressDialog(getContext());
-                pd.setMessage("Wait..");
-                pd.setCancelable(false);
                 getAllBids(stateList);
-                pd.dismiss();
                 ab.dismiss();
+
             }
         });
         ab.show();
@@ -178,41 +190,44 @@ public class MarketFragment extends Fragment {
 
     private void getAllBids(ArrayList<State> stateList) {
         try {
-            Call<ArrayList<Lead>> call = leadApi.getFilterLeads(currentUserId,stateList);
+            Call<ArrayList<Lead>> call = leadApi.getFilterLeads(currentUserId, stateList);
+            final ProgressDialog pd = new ProgressDialog(getContext());
+            pd.setMessage("please wait search match bids");
+            pd.show();
             call.enqueue(new Callback<ArrayList<Lead>>() {
                 @Override
                 public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
+                    pd.dismiss();
                     if (response.code() == 200) {
                         final ArrayList<Lead> bidList = response.body();
-                        if(bidList.size() != 0) {
-                            try {
-                                adapter = new MarketListShowAdapter(bidList);
-                                market.rv.setAdapter(adapter);
-                                market.rv.setLayoutManager(new LinearLayoutManager(getContext()));
-                                adapter.onMarketViewClickLitner(new MarketListShowAdapter.OnRecyclerViewClickListner() {
-                                    @Override
-                                    public void onItemClick(Lead lead, final int positon) {
-                                        BidBottomSheetFragment bottomSheetFragment = new BidBottomSheetFragment(lead, currentUserId, name,bidList,adapter,positon);
-                                        bottomSheetFragment.show(getFragmentManager(), "");
+                        try {
+                            adapter = new MarketListShowAdapter(bidList);
+                            market.rv.setAdapter(adapter);
+                            market.rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                            adapter.onMarketViewClickLitner(new MarketListShowAdapter.OnRecyclerViewClickListner() {
+                                @Override
+                                public void onItemClick(Lead lead, final int positon) {
+                                    BidBottomSheetFragment bottomSheetFragment = new BidBottomSheetFragment(lead, currentUserId, name, bidList, adapter, positon);
+                                    bottomSheetFragment.show(getFragmentManager(), "");
+                                }
 
-                                    }
+                                @Override
+                                public void onCancelButton(Bid bid, int position) {
 
-                                    @Override
-                                    public void onMoreSelected(Bid bid, int position) {
-
-                                    }
-                                });
-                            }catch (Exception e){
-                                Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+                                }
+                            });
+                        } catch (Exception e) {
+                            Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    }else if(response.code() == 404){
+                    } else if (response.code() == 404) {
                         Toast.makeText(getContext(), "Match Bid Not Found", Toast.LENGTH_SHORT).show();
+                    } else if (response.code() == 500) {
+                        Toast.makeText(getContext(), "Server not respond", Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 @Override
                 public void onFailure(Call<ArrayList<Lead>> call, Throwable t) {
-
                     Toast.makeText(getContext(), "" + t, Toast.LENGTH_SHORT).show();
                 }
             });

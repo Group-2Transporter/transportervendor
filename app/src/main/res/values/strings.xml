@@ -5,7 +5,7 @@
     <string-array name="transporterType">
         <item>Select category</item>
         <item>Transporter company</item>
-        <item>Truk owner</item>
+        <item>Truck owner</item>
         <item>Packer and movers</item>
     </string-array>
     <string name="internal_storage">Internal storage</string>

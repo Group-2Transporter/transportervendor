@@ -1,18 +1,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="10dp">
     <androidx.cardview.widget.CardView
+        android:id="@+id/card"
+        android:longClickable="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:clickable="true"
         card_view:cardCornerRadius="12dp"
-        card_view:cardElevation="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp">
+        card_view:cardElevation="15dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -34,51 +33,51 @@
                 android:id="@+id/tvDate"
                 style="@style/confirm_load_textView"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="45dp"
                 android:text="3/12/2020"
+
                 android:layout_marginRight="5dp"
                 android:layout_below="@id/kis"
                 android:layout_alignParentEnd="true"/>
 
             <LinearLayout
                 android:id="@+id/llLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <ImageView
-
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="5dp"
-                    android:src="@drawable/location"
-                    android:layout_marginBottom="-3dp"/>
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginBottom="-3dp"
+                    android:src="@drawable/location" />
 
                 <TextView
-                    android:singleLine="true"
                     android:id="@+id/tvAddress"
+                    android:scrollIndicators="start"
                     style="@style/confirm_load_textView"
                     android:layout_width="wrap_content"
                     android:layout_gravity="center"
-                    android:textStyle="bold"
+                    android:singleLine="true"
+                    android:layout_marginBottom="-3dp"
                     android:text="Source to Destination Add : "
-                    android:layout_marginBottom="-3dp"/>
+                    android:textStyle="bold" />
 
             </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/lll"
+                android:layout_marginLeft="6dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/llLocation"
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:layout_marginTop="5dp"
                     android:id="@+id/llMaterialType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/llLocation"
-                    android:layout_marginLeft="38dp"
                     android:baselineAligned="false">
 
                     <TextView
@@ -94,11 +93,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_marginTop="5dp"
                     android:id="@+id/llName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/llMaterialType"
-                    android:layout_marginLeft="38dp">
+                    android:layout_below="@id/llMaterialType">
 
                     <TextView
                         style="@style/confirm_load_textView"
@@ -116,10 +115,10 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/llName"
-                    android:layout_marginLeft="38dp">
+                    android:layout_below="@id/llName">
 
                     <TextView
                         style="@style/confirm_load_textView"
@@ -137,10 +136,10 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/llName"
-                    android:layout_marginLeft="38dp">
+                    android:layout_below="@id/llName">
 
                     <TextView
                         style="@style/confirm_load_textView"

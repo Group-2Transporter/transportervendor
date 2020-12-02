@@ -5,20 +5,27 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.e.transportervendor.api.TransporterServices;
 import com.e.transportervendor.bean.Transporter;
-import com.e.transportervendor.databinding.ActivityCreateProfileBinding;
+import com.e.transportervendor.databinding.CreateProfileUpdateActivityBinding;
 import com.e.transportervendor.utility.FileUtils;
+import com.e.transportervendor.utility.InternetUtilityActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
@@ -32,38 +39,48 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UpdateProfileActivity extends AppCompatActivity {
-    ActivityCreateProfileBinding profileBinding;
+public class ProfileUpdateActivity extends AppCompatActivity {
+    CreateProfileUpdateActivityBinding profileBinding;
     SharedPreferences sp;
     String imageUrl;
     Uri imageUri;
+    String[] separated;
+    String category = "";
     boolean gstVisibility = false;
     TransporterServices.TransportApi transportApi;
     String currentUserId;
     Transporter transporter;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         transportApi = TransporterServices.getTransporterApiIntance();
-        profileBinding = ActivityCreateProfileBinding.inflate(LayoutInflater.from(this));
+        profileBinding = CreateProfileUpdateActivityBinding.inflate(LayoutInflater.from(this));
         setContentView(profileBinding.getRoot());
+
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         sp = getSharedPreferences("transporter",MODE_PRIVATE);
-        profileBinding.btnSave.setText("Update");
         profileBinding.etUserName.setText(sp.getString("name",""));
         profileBinding.etGstNum.setText(sp.getString("gst",""));
         String currentString = sp.getString("address","");
-        String[] separated = currentString.split(",");
+        separated = currentString.split(",");
         profileBinding.etStreetAdrees.setText(separated[0]);
         profileBinding.etCityAddress.setText(separated[1]);
         profileBinding.etStateAdress.setText(separated[2]);
         profileBinding.etPhoneNumber.setText(sp.getString("contactNumber",""));
         imageUrl=sp.getString("image","");
-        Picasso.get().load(imageUrl).into(profileBinding.profile);
+        Picasso.get().load(imageUrl).into(profileBinding.civProfile);
         getTransporterThroughApi();
 
-        profileBinding.eteditImage.setOnClickListener(new View.OnClickListener() {
+        String compareValue = sp.getString("type","not_found");
+        Toast.makeText(this, ""+compareValue, Toast.LENGTH_SHORT).show();
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.transporterType, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        profileBinding.transporterCategory.setAdapter(adapter);
+        if (!compareValue.equalsIgnoreCase("not_found")) {
+            int spinnerPosition = adapter.getPosition(compareValue);
+            profileBinding.transporterCategory.setSelection(spinnerPosition);
+        }
+        profileBinding.civProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent in = new Intent();
@@ -73,36 +90,64 @@ public class UpdateProfileActivity extends AppCompatActivity {
             }
         });
 
-        profileBinding.btnSave.setOnClickListener(new View.OnClickListener() {
+
+
+        profileBinding.transporterCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                category = profileBinding.transporterCategory.getSelectedItem().toString();
+                Toast.makeText(ProfileUpdateActivity.this, category, Toast.LENGTH_SHORT).show();
+                if (category.equalsIgnoreCase("Transporter company")) {
+                    profileBinding.etGstNum.setVisibility(View.VISIBLE);
+                    gstVisibility = true;
+                } else
+                    profileBinding.etGstNum.setVisibility(View.GONE);
+                gstVisibility = false;
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        if(InternetUtilityActivity.isNetworkConnected(this)) {
+            profileBinding.btnSave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(category.equalsIgnoreCase("Select category")){
+                        Toast.makeText(ProfileUpdateActivity.this, "Please select Category", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     String name = profileBinding.etUserName.getText().toString();
-                    if(name.isEmpty()){
+                    if (name.isEmpty()) {
                         profileBinding.etUserName.setError("Enter Name");
                         return;
                     }
                     String contact = profileBinding.etPhoneNumber.getText().toString();
-                    if(contact.length()<10){
+                    if (contact.length() < 10) {
                         profileBinding.etPhoneNumber.setError("Minimum 10 digits required");
                         return;
                     }
                     String streetAddress = profileBinding.etStreetAdrees.getText().toString();
-                    if(streetAddress.isEmpty()){
+                    if (streetAddress.isEmpty()) {
                         profileBinding.etStreetAdrees.setError("Require data");
                         return;
                     }
                     String cityAddress = profileBinding.etCityAddress.getText().toString();
-                    if(cityAddress.isEmpty()){
+                    if (cityAddress.isEmpty()) {
                         profileBinding.etCityAddress.setError("Require data");
                         return;
                     }
                     String stateAddress = profileBinding.etStateAdress.getText().toString();
-                    if(stateAddress.isEmpty()){
+                    if (stateAddress.isEmpty()) {
                         profileBinding.etStateAdress.setError("Require data");
                         return;
                     }
                     String gstNumber = profileBinding.etGstNum.getText().toString();
-                    if(gstVisibility && gstNumber.length()<14){
+                    if (gstVisibility && gstNumber.length() < 14) {
                         profileBinding.etGstNum.setError("Minimum 14 characters required");
                         return;
                     }
@@ -113,9 +158,10 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     transporter.setContactNumber(contact);
                     transporter.setGstNumber(gstNumber);
                     transporter.setName(name);
+                    transporter.setType(category);
 
                     Call<Transporter> call = transportApi.updateTransporter(transporter);
-                    final ProgressDialog pd = new ProgressDialog(UpdateProfileActivity.this);
+                    final ProgressDialog pd = new ProgressDialog(ProfileUpdateActivity.this);
                     pd.setMessage("please wait while updating profile..");
                     pd.show();
                     call.enqueue(new Callback<Transporter>() {
@@ -126,30 +172,140 @@ public class UpdateProfileActivity extends AppCompatActivity {
                                 if (status == 200) {
                                     Transporter t = response.body();
                                     saveTransporterLocally(t);
-                                    Toast.makeText(UpdateProfileActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ProfileUpdateActivity.this, "Success", Toast.LENGTH_SHORT).show();
                                 } else if (status == 500) {
-                                    Toast.makeText(UpdateProfileActivity.this, "Failed..", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ProfileUpdateActivity.this, "Failed..", Toast.LENGTH_SHORT).show();
                                 }
-                            } catch (Exception e){
-                                Toast.makeText(UpdateProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }finally {
+                            } catch (Exception e) {
+                                Toast.makeText(ProfileUpdateActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            } finally {
                                 pd.dismiss();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Transporter> call, Throwable t) {
-                            Toast.makeText(UpdateProfileActivity.this, "Something went wrong : " + t, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileUpdateActivity.this, "Something went wrong : " + t, Toast.LENGTH_SHORT).show();
                             pd.dismiss();
                         }
                     });
+                }
+            });
+        }else{
+            getInternetAlert();
+        }
+        profileBinding.manageVehicle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(ProfileUpdateActivity.this,ManageVehicleActivity.class);
+                startActivity(in);
             }
         });
 
+        profileBinding.completedLoads.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(ProfileUpdateActivity.this,HistoryActivity.class);
+                startActivity(in);
+            }
+        });
 
-        setSupportActionBar(profileBinding.toolBar);
+        getChangeListner();
+        setSupportActionBar(profileBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Update Profile");
+    }
+
+    private void getChangeListner() {
+        profileBinding.tvUserName.setText(sp.getString("name",""));
+        profileBinding.etUserName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length()!=0)
+                    profileBinding.tvUserName.setText(s);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        profileBinding.tvStreetAddress.setText(separated[0]);
+        profileBinding.etStreetAdrees.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length()!=0)
+                    profileBinding.tvStreetAddress.setText(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        profileBinding.tvCityAddress.setText(separated[1]);
+        profileBinding.etCityAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length()!=0)
+                    profileBinding.tvCityAddress.setText(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        profileBinding.tvStateAddress.setText(separated[2]);
+        profileBinding.etStateAdress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length()!=0)
+                    profileBinding.tvStateAddress.setText(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+    }
+
+    private void getInternetAlert() {
+        final AlertDialog ab = new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Network Not Connected")
+                .setMessage("Please check your network connection")
+                .setPositiveButton("Retry", null)
+                .show();
+        Button positive = ab.getButton(AlertDialog.BUTTON_POSITIVE);
+        positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (InternetUtilityActivity.isNetworkConnected(ProfileUpdateActivity.this)) {
+                    ab.dismiss();
+                }
+            }
+        });
     }
 
 
@@ -160,17 +316,17 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Transporter> call, Response<Transporter> response) {
                     try {
-                        Toast.makeText(UpdateProfileActivity.this, ""+response.code(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileUpdateActivity.this, ""+response.code(), Toast.LENGTH_SHORT).show();
                         if (response.code() == 200) {
                             transporter = response.body();
                         }
                     }catch (Exception e){
-                        Toast.makeText(UpdateProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileUpdateActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override
                 public void onFailure(Call<Transporter> call, Throwable t) {
-                    Toast.makeText(UpdateProfileActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileUpdateActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }catch (Exception e){
@@ -184,7 +340,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
         if(requestCode == 111 && resultCode == RESULT_OK){
             imageUri = data.getData();
             try {
-                File file = FileUtils.getFile(UpdateProfileActivity.this, imageUri);
+                File file = FileUtils.getFile(ProfileUpdateActivity.this, imageUri);
                 RequestBody requestFile =
                         RequestBody.create(
                                 MediaType.parse(getContentResolver().getType(imageUri)),
@@ -197,22 +353,21 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 pd.setMessage("please wait...");
                 pd.setCancelable(false);
                 pd.show();
-                profileBinding.profile.setImageURI(imageUri);
                 call.enqueue(new Callback<Transporter>() {
                     @Override
                     public void onResponse(Call<Transporter> call, Response<Transporter> response) {
                         try {
                             if (response.code() == 200) {
+                                profileBinding.civProfile.setImageURI(imageUri);
                                 SharedPreferences.Editor editor = sp.edit();
                                 editor.putString("image","").clear().commit();
                                 editor.putString("image",imageUrl).commit();
-                                Toast.makeText(UpdateProfileActivity.this, "Image Change SuccessFully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ProfileUpdateActivity.this, "Image Change SuccessFully", Toast.LENGTH_SHORT).show();
                             } else if (response.code() == 500) {
-                                Toast.makeText(UpdateProfileActivity.this, "Failed To Upload Image", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ProfileUpdateActivity.this, "Failed To Upload Image", Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
-
-                            Toast.makeText(UpdateProfileActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileUpdateActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                         } finally {
                             pd.dismiss();
                         }
@@ -220,7 +375,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Transporter> call, Throwable t) {
-                        Toast.makeText(UpdateProfileActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileUpdateActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }
                 });
@@ -248,23 +403,5 @@ public class UpdateProfileActivity extends AppCompatActivity {
         if(t.getGstNumber()!=null)
             gstNo1 = t.getGstNumber();
         editor.putString("gst",gstNo1).commit();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.manage_vehicle,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        switch (id){
-            case R.id.manage :
-                Intent in = new Intent(this,ManageVehicleActivity.class);
-                startActivity(in);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

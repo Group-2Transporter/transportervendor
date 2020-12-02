@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.e.transportervendor.api.TransporterServices;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendUserToUpdateProfile() {
-        Intent inte = new Intent(MainActivity.this,UpdateProfileActivity.class);
+        Intent inte = new Intent(MainActivity.this,ProfileUpdateActivity.class);
         startActivity(inte);
     }
 
@@ -224,8 +225,26 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }else{
-            Toast.makeText(this, "Please enable internet connection", Toast.LENGTH_SHORT).show();
+            getInternetAlert();
         }
+    }
+
+    private void getInternetAlert() {
+        final androidx.appcompat.app.AlertDialog ab = new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle("Network Not Connected")
+                .setMessage("Please check your network connection")
+                .setPositiveButton("Retry", null)
+                .show();
+        Button positive = ab.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
+        positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(InternetUtilityActivity.isNetworkConnected(MainActivity.this)) {
+                    ab.dismiss();
+                }
+            }
+        });
     }
 
     private void sendUserToCreateProfile() {

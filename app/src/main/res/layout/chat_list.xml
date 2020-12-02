@@ -4,15 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:background="@drawable/received_message"
+    <RelativeLayout
         android:id="@+id/received"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="100dp"
         android:layout_margin="10dp"
+        android:elevation="10dp"
         >
 
         <TextView
+            android:background="@drawable/received_message"
+            android:layout_marginRight="100dp"
             android:id="@+id/tvChatReceived"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,21 +23,24 @@
             android:text="Received Messages"
             android:textStyle="bold" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/sent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/send_message"
+        android:layout_marginLeft="100dp"
+        android:elevation="10dp"
         android:layout_margin="10dp">
 
         <TextView
+            android:background="@drawable/send_message"
             android:id="@+id/tvChatSent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="15dp"
+            android:layout_marginLeft="100dp"
             android:text="Send Messages"
             android:textColor="@color/white"
             android:textStyle="bold" />
