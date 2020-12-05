@@ -11,20 +11,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Maharastra"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 
     <ImageView
         android:id="@+id/cLoaded"
         android:layout_alignParentEnd="true"
-        android:layout_height="30dp"
-        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:layout_width="20dp"
         android:src="@drawable/blank_check_box" />
 
     <ImageView
         android:id="@+id/checkLoaded"
         android:layout_alignParentEnd="true"
-        android:layout_height="30dp"
-        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:layout_width="20dp"
         android:src="@drawable/cheked_box"
         android:visibility="gone" />
 </RelativeLayout>

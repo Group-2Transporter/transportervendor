@@ -45,17 +45,10 @@
             android:layout_marginRight="10dp"
             android:backgroundTint="@color/blue"
             android:padding="10dp"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
             android:textSize="20sp"
             android:id="@+id/transporterCategory"
             android:entries="@array/transporterType"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/blue"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            />
-
         <EditText
             android:id="@+id/etUserName"
             android:layout_width="match_parent"

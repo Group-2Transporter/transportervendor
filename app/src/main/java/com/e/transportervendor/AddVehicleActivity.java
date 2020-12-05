@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -25,6 +24,8 @@ import com.e.transportervendor.utility.InternetUtilityActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 
 import okhttp3.MediaType;
@@ -39,7 +40,9 @@ public class AddVehicleActivity extends AppCompatActivity {
     Uri imageUri;
     String currentUserId;
     VehicleService.VehicleApi vehicleApi;
-    ProgressDialog pd;
+    ProgressBar pd;
+    boolean image = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +55,7 @@ public class AddVehicleActivity extends AppCompatActivity {
             final Intent i = getIntent();
             final Vehicle v = (Vehicle) i.getSerializableExtra("vehicle");
             if (v != null) {
+                image = true;
                 Picasso.get().load(v.getImageUrl()).into(vehicleBinding.image);
                 vehicleBinding.vehicletype.setText(v.getName());
                 vehicleBinding.edit.setVisibility(View.GONE);
@@ -61,24 +65,26 @@ public class AddVehicleActivity extends AppCompatActivity {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 111);
             }
-            if(InternetUtilityActivity.isNetworkConnected(this)) {
+            if (InternetUtilityActivity.isNetworkConnected(this)) {
+
                 vehicleBinding.btnSave.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if (image || imageUri != null) {
+                            String name = vehicleBinding.vehicletype.getText().toString();
+                            if (TextUtils.isEmpty(name)) {
+                                vehicleBinding.vehicletype.setError("Enter type");
+                                return;
+                            }
+                            String counter = vehicleBinding.Numberofvehicle.getText().toString();
+                            if (counter.isEmpty()) {
+                                vehicleBinding.Numberofvehicle.setError("Select Number of Vehicle");
+                                return;
+                            }
+                            int count = Integer.parseInt(counter);
+                            String button = vehicleBinding.btnSave.getText().toString();
+                            if (button.equalsIgnoreCase("save")) {
 
-                        String name = vehicleBinding.vehicletype.getText().toString();
-                        if (name.isEmpty()) {
-                            vehicleBinding.vehicletype.setError("Enter type");
-                            return;
-                        }
-                        int count = Integer.parseInt(vehicleBinding.Numberofvehicle.getText().toString());
-                        if (TextUtils.isEmpty(count + "")) {
-                            vehicleBinding.Numberofvehicle.setError("Select Number of Vehicle");
-                            return;
-                        }
-                        String button = vehicleBinding.btnSave.getText().toString();
-                        if (button.equalsIgnoreCase("save")) {
-                            if (imageUri != null) {
                                 try {
                                     File file = FileUtils.getFile(AddVehicleActivity.this, imageUri);
                                     RequestBody requestFile =
@@ -95,59 +101,69 @@ public class AddVehicleActivity extends AppCompatActivity {
                                             numberOfVehicle,
                                             transporterid
                                     );
-                                    pd = new ProgressDialog(AddVehicleActivity.this);
-                                    pd.setMessage("please wait...");
-                                    pd.show();
+                                    if (InternetUtilityActivity.isNetworkConnected(AddVehicleActivity.this)) {
+                                        pd = new ProgressBar(AddVehicleActivity.this);
+                                        pd.startLoadingDialog();
+                                        call.enqueue(new Callback<Vehicle>() {
+                                            @Override
+                                            public void onResponse(Call<Vehicle> call, Response<Vehicle> response) {
+                                                int status = response.code();
+                                                pd.dismissDialog();
+                                                if (status == 200) {
+                                                    try {
+                                                        Vehicle v = response.body();
+                                                        Toast.makeText(AddVehicleActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                                        sendUserToManageVehicleActivity();
+                                                    } catch (Exception e) {
+                                                        Toast.makeText(AddVehicleActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                } else if (status == 500) {
+                                                    Toast.makeText(AddVehicleActivity.this, "Failed..", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<Vehicle> call, Throwable t) {
+                                                pd.dismissDialog();
+                                                Toast.makeText(AddVehicleActivity.this, "Something went wrong : " + t, Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    } else {
+                                        getInternetAlert();
+                                    }
+                                } catch (Exception e) {
+                                    Toast.makeText(AddVehicleActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            } else if (button.equalsIgnoreCase("update")) {
+                                v.setCount(count);
+                                v.setName(name);
+                                if (InternetUtilityActivity.isNetworkConnected(AddVehicleActivity.this)) {
+                                    pd = new ProgressBar(AddVehicleActivity.this);
+                                    pd.startLoadingDialog();
+                                    Call<Vehicle> call = vehicleApi.updateVehicle(currentUserId, v);
                                     call.enqueue(new Callback<Vehicle>() {
                                         @Override
                                         public void onResponse(Call<Vehicle> call, Response<Vehicle> response) {
-                                            int status = response.code();
-                                            pd.dismiss();
-                                            if (status == 200) {
-                                                try {
-                                                    Vehicle v = response.body();
-                                                    Toast.makeText(AddVehicleActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                                                    sendUserToManageVehicleActivity();
-                                                } catch (Exception e) {
-                                                    Toast.makeText(AddVehicleActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
-
-                                            } else if (status == 500) {
-                                                Toast.makeText(AddVehicleActivity.this, "Failed..", Toast.LENGTH_SHORT).show();
+                                            pd.dismissDialog();
+                                            if (response.code() == 200) {
+                                                Toast.makeText(AddVehicleActivity.this, "Vehicle Update SuccessFully", Toast.LENGTH_SHORT).show();
+                                                sendUserToManageVehicleActivity();
+                                                finish();
                                             }
                                         }
 
                                         @Override
                                         public void onFailure(Call<Vehicle> call, Throwable t) {
-                                            Toast.makeText(AddVehicleActivity.this, "Something went wrong : " + t, Toast.LENGTH_SHORT).show();
+                                            pd.dismissDialog();
                                         }
                                     });
-                                } catch (Exception e) {
-                                    Toast.makeText(AddVehicleActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    getInternetAlert();
                                 }
-                            } else
-                                Toast.makeText(AddVehicleActivity.this, "Image is mendatory..", Toast.LENGTH_SHORT).show();
-                        } else if (button.equalsIgnoreCase("update")) {
-                            v.setCount(count);
-                            v.setName(name);
-                            Call<Vehicle> call = vehicleApi.updateVehicle(currentUserId, v);
-                            call.enqueue(new Callback<Vehicle>() {
-                                @Override
-                                public void onResponse(Call<Vehicle> call, Response<Vehicle> response) {
-                                    if (response.code() == 200) {
-                                        Toast.makeText(AddVehicleActivity.this, "Vehicle Update SuccessFully", Toast.LENGTH_SHORT).show();
-                                        sendUserToManageVehicleActivity();
-                                        finish();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<Vehicle> call, Throwable t) {
-
-                                }
-                            });
-
-                        }
+                            }
+                        }else
+                            Toast.makeText(AddVehicleActivity.this, "Image is mendatory..", Toast.LENGTH_SHORT).show();
                     }
                 });
                 vehicleBinding.edit.setOnClickListener(new View.OnClickListener() {
@@ -165,11 +181,11 @@ public class AddVehicleActivity extends AppCompatActivity {
                 });
                 setSupportActionBar(vehicleBinding.toolBar);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            }else{
+            } else {
                 getInternetAlert();
             }
-        }catch (Exception e){
-            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -184,7 +200,7 @@ public class AddVehicleActivity extends AppCompatActivity {
         positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(InternetUtilityActivity.isNetworkConnected(AddVehicleActivity.this)) {
+                if (InternetUtilityActivity.isNetworkConnected(AddVehicleActivity.this)) {
                     ab.dismiss();
                 }
             }

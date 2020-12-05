@@ -24,11 +24,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.e.transportervendor.ChatActivity;
+import com.e.transportervendor.ProgressBar;
 import com.e.transportervendor.R;
 import com.e.transportervendor.adapter.HomeCurrentLoadShowAdapter;
 import com.e.transportervendor.api.LeadService;
 import com.e.transportervendor.api.UserService;
-import com.e.transportervendor.bean.Bid;
 import com.e.transportervendor.bean.Lead;
 import com.e.transportervendor.bean.User;
 import com.e.transportervendor.databinding.HomeFragmentBinding;
@@ -53,8 +53,8 @@ public class HomeFragment extends Fragment {
     LeadService.LeadApi leadApi;
     String currentUserId;
     String materialStatus;
-    ProgressDialog pd ;
     String userToken;
+    ProgressBar pd;
     ArrayList<Lead> leadList;
     @Nullable
     @Override
@@ -66,15 +66,14 @@ public class HomeFragment extends Fragment {
                 currentUserId = FirebaseAuth.getInstance().getUid();
                 if(InternetUtilityActivity.isNetworkConnected(getContext())) {
                     Call<ArrayList<Lead>> call = leadApi.getCurrentLoadByTransporterId(currentUserId);
-                    pd = new ProgressDialog(getContext());
-                    pd.setMessage("Please wait...");
-                    pd.show();
+                   pd = new ProgressBar(getActivity());
+                   pd.startLoadingDialog();
 
                     call.enqueue(new Callback<ArrayList<Lead>>() {
                         @Override
                         public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
                             leadList = response.body();
-                            pd.dismiss();
+                            pd.dismissDialog();
                             if (response.code() == 200) {
                                 try {
                                     if (leadApi != null) {
@@ -105,7 +104,8 @@ public class HomeFragment extends Fragment {
 
                         @Override
                         public void onFailure(Call<ArrayList<Lead>> call, Throwable t) {
-
+                            pd.dismissDialog();
+                            Toast.makeText(getContext(), ""+t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }else{
@@ -194,10 +194,8 @@ public class HomeFragment extends Fragment {
                 if(materialStatus.equalsIgnoreCase("Unloaded")) {
                     lead.setStatus("completed");
                 }
-                final ProgressDialog pd = new ProgressDialog(getContext());
-                pd.setMessage("Wait...");
-                pd.show();
-                pd.setCancelable(false);
+                pd = new ProgressBar(getActivity());
+                pd.startLoadingDialog();
                 if(InternetUtilityActivity.isNetworkConnected(getContext())) {
                     Call<Lead> call = leadApi.updateLeadById(lead.getLeadId(), lead);
                     call.enqueue(new Callback<Lead>() {
@@ -205,7 +203,7 @@ public class HomeFragment extends Fragment {
                         public void onResponse(Call<Lead> call, Response<Lead> response) {
                             if (response.code() == 200) {
                                 try {
-                                    pd.dismiss();
+                                    pd.dismissDialog();
                                     if (!materialStatus.equalsIgnoreCase("unloaded")) {
                                         Toast.makeText(getContext(), "" + lead.getMaterialStatus() + " Update Successfully", Toast.LENGTH_SHORT).show();
                                     } else {
@@ -223,7 +221,7 @@ public class HomeFragment extends Fragment {
                         @Override
                         public void onFailure(Call<Lead> call, Throwable t) {
                             Toast.makeText(getContext(), "" + t, Toast.LENGTH_SHORT).show();
-                            pd.dismiss();
+                            pd.dismissDialog();
                         }
                     });
                     ab.dismiss();

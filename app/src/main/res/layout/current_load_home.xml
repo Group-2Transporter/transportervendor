@@ -1,158 +1,230 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="10dp">
 
-    <androidx.cardview.widget.CardView
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:clickable="true"
-        card_view:cardCornerRadius="12dp"
-        card_view:cardElevation="10dp">
-
-        <RelativeLayout
+        android:layout_height="wrap_content">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardCurrent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginBottom="5dp"
-            android:elevation="10dp"
-            android:padding="5dp">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
+            card_view:cardCornerRadius="12dp"
+            card_view:cardElevation="10dp">
 
-            <TextView
-                android:id="@+id/date"
-                style="@style/confirm_load_textView"
-                android:layout_width="wrap_content"
-                android:layout_toLeftOf="@id/tvCLDate"
-                android:text="Expiry Date: " />
-
-            <TextView
-                android:id="@+id/tvCLDate"
-                style="@style/confirm_load_textView"
-                android:layout_width="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="7dp"
-                android:text="10/23/2020" />
-
-            <LinearLayout
-                android:id="@+id/llLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvCLDate"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginBottom="-3dp"
-                    android:src="@drawable/location" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp"
+                android:elevation="10dp"
+                android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/tvAddress"
+                    android:id="@+id/date"
                     style="@style/confirm_load_textView"
                     android:layout_width="wrap_content"
-                    android:layout_gravity="center"
-                    android:singleLine="true"
-                    android:layout_marginBottom="-3dp"
-                    android:text="Source to Destination Add : "
-                    android:textStyle="bold" />
+                    android:layout_toLeftOf="@id/tvCLDate"
+                    android:text="Last Date: " />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/tvCLDate"
+                    style="@style/confirm_load_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="7dp"
+                    android:text="10/23/2020" />
 
-            <LinearLayout
-                android:layout_marginLeft="35dp"
-                android:id="@+id/lll"
+                <LinearLayout
+                    android:id="@+id/llLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvCLDate"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="-3dp"
+                        android:src="@drawable/location_blue" />
+
+                    <TextView
+                        android:id="@+id/tvAddress"
+                        style="@style/confirm_load_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="-3dp"
+                        android:singleLine="true"
+                        android:text="Source to Destination Add : "
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/llLocation"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/llMaterialType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/llLocation"
+                        android:layout_marginTop="5dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/client" />
+
+                        <TextView
+                            style="@style/confirm_load_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="3dp"
+                            android:text="Client : "
+
+                            />
+
+                        <TextView
+                            android:id="@+id/tvUserName"
+                            style="@style/confirm_load_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="User name" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/llMaterialType"
+                        android:layout_marginTop="5dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginTop="2dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/material" />
+
+                        <TextView
+                            style="@style/confirm_load_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_marginLeft="6dp"
+                            android:layout_marginTop="3dp"
+                            android:text="Material : " />
+
+                        <TextView
+                            android:id="@+id/tvTypeOfMaterial"
+                            style="@style/confirm_load_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="Steel" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="15dp"
+                            android:src="@drawable/weight" />
+
+                        <TextView
+                            style="@style/confirm_load_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_marginLeft="6dp"
+                            android:layout_marginTop="4dp"
+                            android:text="Weight : "
+
+                            />
+
+                        <TextView
+                            android:id="@+id/tvWeight"
+                            style="@style/confirm_load_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="200" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/llName"
+                        android:layout_marginTop="5dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="18dp"
+                            android:scaleType="fitEnd"
+                            android:src="@drawable/rupee" />
+
+                        <TextView
+                            style="@style/confirm_load_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_marginLeft="6dp"
+                            android:text="Amount : "
+
+                            />
+
+                        <TextView
+                            android:id="@+id/tvAmount"
+                            style="@style/confirm_load_textView"
+                            android:layout_width="wrap_content"
+                            android:text="10000" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/ivMoreVert"
+                    android:layout_width="30dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/tvCLDate"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="25dp"
+                    android:src="@drawable/more_vert" />
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="13dp"
+        android:clickable="true"
+        card_view:cardCornerRadius="6dp"
+        card_view:cardElevation="10dp"
+        android:elevation="10dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:textColor="#23CC2A"
+                android:paddingTop="3dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/llLocation"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/llMaterialType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/llLocation">
-
-                    <TextView
-                        style="@style/confirm_load_textView"
-                        android:layout_width="wrap_content"
-                        android:text="Material : " />
-
-                    <TextView
-                        android:id="@+id/tvTypeOfaterial"
-                        style="@style/confirm_load_textView"
-                        android:layout_width="wrap_content"
-                        android:text="Steel" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/llMaterialType">
-
-                    <TextView
-                        style="@style/confirm_load_textView"
-                        android:layout_width="wrap_content"
-                        android:text="Name : "
-
-                        />
-
-                    <TextView
-                        android:id="@+id/tvUserName"
-                        style="@style/confirm_load_textView"                        android:layout_width="wrap_content"
-                        android:text="User name" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/llName">
-
-                    <TextView
-                        style="@style/confirm_load_textView"
-                        android:layout_width="wrap_content"
-                        android:text="Weight : "
-
-                        />
-
-                    <TextView
-                        android:id="@+id/tvWeight"
-                        style="@style/confirm_load_textView"
-                        android:layout_width="wrap_content"
-                        android:text="100" />
-                    <TextView
-                        style="@style/confirm_load_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="Amount : "
-
-                        />
-
-                    <TextView
-                        android:id="@+id/tvAmount"
-                        style="@style/confirm_load_textView"
-                        android:layout_width="wrap_content"
-                        android:text="10000" />
-
-                </LinearLayout>
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/ivMoreVert"
-                android:layout_width="30dp"
-                android:layout_height="50dp"
-                android:layout_below="@+id/tvCLDate"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="25dp"
-                android:src="@drawable/more_vert" />
-
-        </RelativeLayout>
+                android:text="Active Deal" />
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
-</LinearLayout>
+
+
+
+</RelativeLayout>

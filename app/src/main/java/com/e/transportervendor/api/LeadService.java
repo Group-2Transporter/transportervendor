@@ -1,9 +1,7 @@
 package com.e.transportervendor.api;
 
 import com.e.transportervendor.bean.Lead;
-import com.e.transportervendor.bean.State;
-import com.e.transportervendor.bean.Transporter;
-import com.e.transportervendor.bean.Vehicle;
+import com.e.transportervendor.bean.States;
 
 import java.util.ArrayList;
 
@@ -38,7 +36,7 @@ public class LeadService {
         public Call<Lead> updateLeadById(@Path("leadId")String leadId, @Body Lead lead);
 
         @POST("lead/filter/{transporterId}")
-        public Call<ArrayList<Lead>> getFilterLeads(@Path("transporterId")String transporterId,@Body ArrayList<State> stateList);
+        public Call<ArrayList<Lead>> getFilterLeads(@Path("transporterId")String transporterId,@Body ArrayList<States> stateList);
 
         @GET("lead/bids/{transporterId}")
         public Call<ArrayList<Lead>> getAllLeads(@Path("transporterId")String transporterId);

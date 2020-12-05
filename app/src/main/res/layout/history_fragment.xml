@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spinner"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
         />
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="5dp"

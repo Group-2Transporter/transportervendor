@@ -77,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 }
             });
-            if(InternetUtilityActivity.isNetworkConnected(this)) {
+
                 profileBinding.btnSave.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -144,6 +144,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     transporterGstNo,
                                     transporterToken,
                                     transporterRating);
+                            if(InternetUtilityActivity.isNetworkConnected(ProfileActivity.this)) {
                             final ProgressDialog pd = new ProgressDialog(ProfileActivity.this);
                             pd.setMessage("please wait while creating profile..");
                             pd.show();
@@ -174,6 +175,9 @@ public class ProfileActivity extends AppCompatActivity {
                                     pd.dismiss();
                                 }
                             });
+                            }else{
+                                getInternetAlert();
+                            }
                         } else
                             Toast.makeText(ProfileActivity.this, "Image is mendatory..", Toast.LENGTH_SHORT).show();
 
@@ -193,9 +197,7 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
                 });
-            }else{
-                getInternetAlert();
-            }
+
         }catch (Exception e){
             Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
         }

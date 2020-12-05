@@ -16,16 +16,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.e.transportervendor.ProgressBar;
 import com.e.transportervendor.adapter.FilterAdapter;
 import com.e.transportervendor.adapter.MarketListShowAdapter;
 import com.e.transportervendor.api.LeadService;
+import com.e.transportervendor.api.StatesService;
 import com.e.transportervendor.bean.Bid;
 import com.e.transportervendor.bean.Lead;
-import com.e.transportervendor.bean.State;
+import com.e.transportervendor.bean.States;
 import com.e.transportervendor.databinding.FilterAlertBinding;
 import com.e.transportervendor.databinding.MarketFragmentBinding;
 import com.e.transportervendor.utility.InternetUtilityActivity;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -38,17 +39,18 @@ public class MarketFragment extends Fragment {
 
     LeadService.LeadApi leadApi;
     MarketFragmentBinding market;
-    ArrayList<State> state;
-    ArrayList<State> stateList;
+    ArrayList<States> state;
+    ArrayList<States> stateList;
     String currentUserId;
     String name;
-    ProgressDialog pd;
+    ProgressBar pd;
     MarketListShowAdapter adapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         market = MarketFragmentBinding.inflate(getLayoutInflater());
+        getStateList();
         if (InternetUtilityActivity.isNetworkConnected(getContext())) {
             try {
                 SharedPreferences sp = getActivity().getSharedPreferences("transporter", Context.MODE_PRIVATE);
@@ -101,12 +103,11 @@ public class MarketFragment extends Fragment {
     private void getAllCreatedLeads(final String currentUserId) {
         try {
             Call<ArrayList<Lead>> call = leadApi.getAllCreatedLeads(currentUserId);
-            pd = new ProgressDialog(getContext());
-            pd.setMessage("please wait...");
-            pd.show();
+            pd = new ProgressBar(getActivity());
+            pd.startLoadingDialog();
             call.enqueue(new Callback<ArrayList<Lead>>() {
                 public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
-                    pd.dismiss();
+                    pd.dismissDialog();
                     if (response.code() == 200) {
                         final ArrayList<Lead> bidList = response.body();
                         try {
@@ -144,26 +145,25 @@ public class MarketFragment extends Fragment {
             Toast.makeText(getContext(), "" + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
+    private void getStateList(){
+        StatesService.StatesApi statesApi = StatesService.getStatesApiInstance();
+        statesApi.getStateList().enqueue(new Callback<ArrayList<States>>() {
+            @Override
+            public void onResponse(Call<ArrayList<States>> call, Response<ArrayList<States>> response) {
+                if (response.code() == 200 ){
+                        state = response.body();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<States>> call, Throwable t) {
+
+            }
+        });
+    }
 
     private void getFilterAlertDialog() {
-        state = new ArrayList<>();
-        state.add(new State("West Bengal"));
-        state.add(new State("Andhra Pradesh"));
-        state.add(new State("Arunachal Pradesh"));
-        state.add(new State("Assam"));
-        state.add(new State("Bihar"));
-        state.add(new State("Chhattisgarh"));
-        state.add(new State("Goa"));
-        state.add(new State("Gujarat"));
-        state.add(new State("Haryana"));
-        state.add(new State("Himachal Pradesh"));
-        state.add(new State("Jharkhand"));
-        state.add(new State("Karnataka"));
-        state.add(new State("Kerala"));
-        state.add(new State("Madhya Pradesh"));
-        state.add(new State("Maharashtra"));
-        state.add(new State("Manipur"));
-        state.add(new State("West Bengal"));
+
         final AlertDialog ab = new AlertDialog.Builder(getContext()).create();
         final FilterAlertBinding filterAlert = FilterAlertBinding.inflate(LayoutInflater.from(getContext()));
         ab.setView(filterAlert.getRoot());
@@ -173,6 +173,10 @@ public class MarketFragment extends Fragment {
         filterAlert.ivCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stateList = adapter.getSelectedState();
+                for(States s : stateList){
+                    s.setCheck(false);
+                }
                 ab.dismiss();
             }
         });
@@ -182,22 +186,24 @@ public class MarketFragment extends Fragment {
                 stateList = adapter.getSelectedState();
                 getAllBids(stateList);
                 ab.dismiss();
+                for(States s : stateList){
+                    s.setCheck(false);
+                }
 
             }
         });
         ab.show();
     }
 
-    private void getAllBids(ArrayList<State> stateList) {
+    private void getAllBids(ArrayList<States> stateList) {
         try {
             Call<ArrayList<Lead>> call = leadApi.getFilterLeads(currentUserId, stateList);
-            final ProgressDialog pd = new ProgressDialog(getContext());
-            pd.setMessage("please wait search match bids");
-            pd.show();
+            pd = new ProgressBar(getActivity());
+            pd.startLoadingDialog();
             call.enqueue(new Callback<ArrayList<Lead>>() {
                 @Override
                 public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
-                    pd.dismiss();
+                    pd.dismissDialog();
                     if (response.code() == 200) {
                         final ArrayList<Lead> bidList = response.body();
                         try {
@@ -228,6 +234,7 @@ public class MarketFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<ArrayList<Lead>> call, Throwable t) {
+                    pd.dismissDialog();
                     Toast.makeText(getContext(), "" + t, Toast.LENGTH_SHORT).show();
                 }
             });
