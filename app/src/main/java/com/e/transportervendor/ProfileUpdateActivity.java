@@ -21,7 +21,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.e.transportervendor.api.BidService;
+import com.e.transportervendor.api.LeadService;
 import com.e.transportervendor.api.TransporterServices;
+import com.e.transportervendor.bean.Bid;
+import com.e.transportervendor.bean.Lead;
 import com.e.transportervendor.bean.Transporter;
 import com.e.transportervendor.databinding.CreateProfileUpdateActivityBinding;
 import com.e.transportervendor.utility.FileUtils;
@@ -31,6 +35,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -45,6 +50,7 @@ public class ProfileUpdateActivity extends AppCompatActivity {
     String imageUrl;
     Uri imageUri;
     String[] separated;
+    ProgressBar pd;
     String category = "";
     boolean gstVisibility = false;
     TransporterServices.TransportApi transportApi;
@@ -60,7 +66,9 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         sp = getSharedPreferences("transporter",MODE_PRIVATE);
         profileBinding.etUserName.setText(sp.getString("name",""));
-        profileBinding.etGstNum.setText(sp.getString("gst",""));
+        String gs = sp.getString("gst","not_found");
+        if(!gs.equalsIgnoreCase("not_found"))
+        profileBinding.etGstNum.setText(gs);
         String currentString = sp.getString("address","");
         separated = currentString.split(",");
         profileBinding.etStreetAdrees.setText(separated[0]);
@@ -70,7 +78,7 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         imageUrl=sp.getString("image","");
         Picasso.get().load(imageUrl).into(profileBinding.civProfile);
         getTransporterThroughApi();
-
+        setLoadsDetails();
         String compareValue = sp.getString("type","not_found");
         Toast.makeText(this, ""+compareValue, Toast.LENGTH_SHORT).show();
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.transporterType, android.R.layout.simple_spinner_item);
@@ -102,8 +110,7 @@ public class ProfileUpdateActivity extends AppCompatActivity {
                     gstVisibility = true;
                 } else
                     profileBinding.etGstNum.setVisibility(View.GONE);
-                gstVisibility = false;
-
+                    gstVisibility = false;
             }
 
             @Override
@@ -161,32 +168,30 @@ public class ProfileUpdateActivity extends AppCompatActivity {
                     transporter.setType(category);
 
                     Call<Transporter> call = transportApi.updateTransporter(transporter);
-                    final ProgressDialog pd = new ProgressDialog(ProfileUpdateActivity.this);
-                    pd.setMessage("please wait while updating profile..");
-                    pd.show();
+                    pd = new ProgressBar(ProfileUpdateActivity.this);
+                    pd.startLoadingDialog();
                     call.enqueue(new Callback<Transporter>() {
                         @Override
                         public void onResponse(Call<Transporter> call, Response<Transporter> response) {
                             try {
                                 int status = response.code();
+                                pd.dismissDialog();
                                 if (status == 200) {
                                     Transporter t = response.body();
                                     saveTransporterLocally(t);
-                                    Toast.makeText(ProfileUpdateActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ProfileUpdateActivity.this, "Update Successfully", Toast.LENGTH_SHORT).show();
                                 } else if (status == 500) {
                                     Toast.makeText(ProfileUpdateActivity.this, "Failed..", Toast.LENGTH_SHORT).show();
                                 }
                             } catch (Exception e) {
                                 Toast.makeText(ProfileUpdateActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            } finally {
-                                pd.dismiss();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Transporter> call, Throwable t) {
                             Toast.makeText(ProfileUpdateActivity.this, "Something went wrong : " + t, Toast.LENGTH_SHORT).show();
-                            pd.dismiss();
+                            pd.dismissDialog();
                         }
                     });
                 }
@@ -349,14 +354,13 @@ public class ProfileUpdateActivity extends AppCompatActivity {
                 RequestBody transporterId = RequestBody.create(MultipartBody.FORM, currentUserId);
                 Toast.makeText(this, "come on ", Toast.LENGTH_SHORT).show();
                 Call<Transporter> call = transportApi.updateImageTransporter(body, transporterId);
-                final ProgressDialog pd = new ProgressDialog(this);
-                pd.setMessage("please wait...");
-                pd.setCancelable(false);
-                pd.show();
+                pd = new ProgressBar(this);
+                pd.startLoadingDialog();
                 call.enqueue(new Callback<Transporter>() {
                     @Override
                     public void onResponse(Call<Transporter> call, Response<Transporter> response) {
                         try {
+                            pd.dismissDialog();
                             if (response.code() == 200) {
                                 profileBinding.civProfile.setImageURI(imageUri);
                                 SharedPreferences.Editor editor = sp.edit();
@@ -368,15 +372,13 @@ public class ProfileUpdateActivity extends AppCompatActivity {
                             }
                         } catch (Exception e) {
                             Toast.makeText(ProfileUpdateActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        } finally {
-                            pd.dismiss();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Transporter> call, Throwable t) {
                         Toast.makeText(ProfileUpdateActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        pd.dismiss();
+                        pd.dismissDialog();
                     }
                 });
             }catch (Exception e){
@@ -384,6 +386,63 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             }
         }
 
+    }
+    private void setLoadsDetails(){
+        LeadService.LeadApi leadApi = LeadService.getTransporterApiIntance();
+        leadApi.getCurrentLoadByTransporterId(currentUserId).enqueue(new Callback<ArrayList<Lead>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
+                if(response.code() == 200){
+                    profileBinding.active.setText(""+response.body().size());
+                }else if(response.code() == 404){
+                    profileBinding.active.setText("0");
+                }else{
+                    Toast.makeText(ProfileUpdateActivity.this, "Something is wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Lead>> call, Throwable t) {
+                Toast.makeText(ProfileUpdateActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        BidService.BidApi bidApi = BidService.getBidApiInstance();
+        bidApi.getAllPendingBids(currentUserId).enqueue(new Callback<ArrayList<Bid>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Bid>> call, Response<ArrayList<Bid>> response) {
+                if(response.code() == 200){
+                    profileBinding.pending.setText(""+response.body().size());
+                }else if(response.code() == 404){
+                    profileBinding.pending.setText("0");
+                }else{
+                    Toast.makeText(ProfileUpdateActivity.this, "Something is wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Bid>> call, Throwable t) {
+                Toast.makeText(ProfileUpdateActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        leadApi.getAllCompletedLeads(currentUserId).enqueue(new Callback<ArrayList<Lead>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
+                if(response.code() == 200){
+                    profileBinding.complelte.setText(""+response.body().size());
+                }else if(response.code() == 404){
+                    profileBinding.complelte.setText("0");
+                }else{
+                    Toast.makeText(ProfileUpdateActivity.this, "Something is wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Lead>> call, Throwable t) {
+                Toast.makeText(ProfileUpdateActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     private void saveTransporterLocally(Transporter t){
         SharedPreferences.Editor editor= sp.edit();

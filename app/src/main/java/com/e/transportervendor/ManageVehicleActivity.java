@@ -34,7 +34,7 @@ public class ManageVehicleActivity extends AppCompatActivity {
     ManageVehicleBinding manageVehicleBinding;
     List<Vehicle> vehicleList;
     ShowVehicleListAdapter adapter;
-    ProgressDialog pd;
+    ProgressBar pd;
     String currentUserId;
     TransporterServices.TransportApi transporterApi;
     VehicleService.VehicleApi vehicleApi;
@@ -50,75 +50,76 @@ public class ManageVehicleActivity extends AppCompatActivity {
             if (InternetUtilityActivity.isNetworkConnected(this)) {
                 transporterApi = TransporterServices.getTransporterApiIntance();
                 Call<Transporter> call = transporterApi.getTransporterVehicleList(currentUserId);
-                pd = new ProgressDialog(this);
-                pd.setMessage("Check Data Please Wait...");
-                pd.show();
+                pd = new ProgressBar(this);
+                pd.startLoadingDialog();
                 call.enqueue(new Callback<Transporter>() {
                     @Override
                     public void onResponse(final Call<Transporter> call, Response<Transporter> response) {
-                        Toast.makeText(ManageVehicleActivity.this, "" + response.code(), Toast.LENGTH_SHORT).show();
+                        pd.dismissDialog();
                         if (response.code() == 200) {
                             try {
                                 Transporter t = response.body();
                                 vehicleList = t.getVehicle();
-                                pd.dismiss();
-                                adapter = new ShowVehicleListAdapter(vehicleList);
-                                manageVehicleBinding.rv.setAdapter(adapter);
-                                manageVehicleBinding.rv.setLayoutManager(new LinearLayoutManager(ManageVehicleActivity.this));
-                                adapter.setOnRecyclerListener(new ShowVehicleListAdapter.OnRecyclerViewClick() {
-                                    @Override
-                                    public void onItemClick(final Vehicle vehicle, final int postion, final String status) {
-                                        if (status.equalsIgnoreCase("Delete")) {
-                                            AlertDialog.Builder ab = new AlertDialog.Builder(ManageVehicleActivity.this);
-                                            ab.setTitle("Delete");
-                                            ab.setMessage("Are You Sure ?");
-                                            ab.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    final ProgressDialog pd1 = new ProgressDialog(ManageVehicleActivity.this);
-                                                    pd1.setMessage("Delete Vehicles");
-                                                    pd1.show();
-                                                    if (InternetUtilityActivity.isNetworkConnected(ManageVehicleActivity.this)) {
-                                                        Call<Vehicle> call1 = vehicleApi.deleteTransporterVehicle(vehicle.getVehicelId(), currentUserId);
-                                                        call1.enqueue(new Callback<Vehicle>() {
-                                                            @Override
-                                                            public void onResponse(Call<Vehicle> call, Response<Vehicle> response) {
-                                                                if (response.code() == 200) {
-                                                                    vehicleList.remove(postion);
-                                                                    adapter.notifyDataSetChanged();
-                                                                    Snackbar.make(manageVehicleBinding.rv, "Vehicle Delete Successfully", Snackbar.LENGTH_LONG);
+                                if(t.getVehicle()!=null) {
+                                    adapter = new ShowVehicleListAdapter(vehicleList);
+                                    manageVehicleBinding.rv.setAdapter(adapter);
+                                    manageVehicleBinding.rv.setLayoutManager(new LinearLayoutManager(ManageVehicleActivity.this));
+                                    adapter.setOnRecyclerListener(new ShowVehicleListAdapter.OnRecyclerViewClick() {
+                                        @Override
+                                        public void onItemClick(final Vehicle vehicle, final int postion, final String status) {
+                                            if (status.equalsIgnoreCase("Delete")) {
+                                                AlertDialog.Builder ab = new AlertDialog.Builder(ManageVehicleActivity.this);
+                                                ab.setTitle("Delete");
+                                                ab.setMessage("Are You Sure ?");
+                                                ab.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        final ProgressDialog pd1 = new ProgressDialog(ManageVehicleActivity.this);
+                                                        pd1.setMessage("Delete Vehicles");
+                                                        pd1.show();
+                                                        if (InternetUtilityActivity.isNetworkConnected(ManageVehicleActivity.this)) {
+                                                            Call<Vehicle> call1 = vehicleApi.deleteTransporterVehicle(vehicle.getVehicelId(), currentUserId);
+                                                            call1.enqueue(new Callback<Vehicle>() {
+                                                                @Override
+                                                                public void onResponse(Call<Vehicle> call, Response<Vehicle> response) {
+                                                                    if (response.code() == 200) {
+                                                                        vehicleList.remove(postion);
+                                                                        adapter.notifyDataSetChanged();
+                                                                        Snackbar.make(manageVehicleBinding.rv, "Vehicle Delete Successfully", Snackbar.LENGTH_LONG);
+                                                                    }
+                                                                    pd1.dismiss();
                                                                 }
-                                                                pd1.dismiss();
-                                                            }
 
-                                                            @Override
-                                                            public void onFailure(Call<Vehicle> call, Throwable t) {
-                                                                Toast.makeText(ManageVehicleActivity.this, "" + t, Toast.LENGTH_SHORT).show();
-                                                                pd1.dismiss();
-                                                            }
-                                                        });
-                                                    } else {
-                                                        getInternetAlert();
+                                                                @Override
+                                                                public void onFailure(Call<Vehicle> call, Throwable t) {
+                                                                    Toast.makeText(ManageVehicleActivity.this, "" + t, Toast.LENGTH_SHORT).show();
+                                                                    pd1.dismiss();
+                                                                }
+                                                            });
+                                                        } else {
+                                                            getInternetAlert();
+                                                        }
                                                     }
-                                                }
-                                            });
-                                            ab.setNegativeButton("Cancel", null);
-                                            ab.show();
+                                                });
+                                                ab.setNegativeButton("Cancel", null);
+                                                ab.show();
 
-                                        } else if (status.equalsIgnoreCase("Edit")) {
-                                            try {
-                                                Toast.makeText(ManageVehicleActivity.this, "hell", Toast.LENGTH_SHORT).show();
-                                                Intent in = new Intent(ManageVehicleActivity.this, AddVehicleActivity.class);
-                                                in.putExtra("vehicle", vehicle);
-                                                startActivity(in);
-                                            } catch (Exception e) {
-                                                Toast.makeText(ManageVehicleActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            } else if (status.equalsIgnoreCase("Edit")) {
+                                                try {
+                                                    Toast.makeText(ManageVehicleActivity.this, "hell", Toast.LENGTH_SHORT).show();
+                                                    Intent in = new Intent(ManageVehicleActivity.this, AddVehicleActivity.class);
+                                                    in.putExtra("vehicle", vehicle);
+                                                    startActivity(in);
+                                                } catch (Exception e) {
+                                                    Toast.makeText(ManageVehicleActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                         }
-                                    }
-                                });
+                                    });
+                                }
 
                             } catch (Exception e) {
+                                pd.dismissDialog();
                                 Toast.makeText(ManageVehicleActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -127,7 +128,7 @@ public class ManageVehicleActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<Transporter> call, Throwable t) {
                         Toast.makeText(ManageVehicleActivity.this, "Something went rong", Toast.LENGTH_SHORT).show();
-                        pd.dismiss();
+                        pd.dismissDialog();
                     }
                 });
 

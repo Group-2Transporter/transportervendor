@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.e.transportervendor.R;
-import com.e.transportervendor.bean.State;
+import com.e.transportervendor.bean.States;
 import com.e.transportervendor.databinding.FilterListBinding;
 
 import java.util.ArrayList;
@@ -19,10 +19,10 @@ import java.util.ArrayList;
 public class FilterAdapter extends ArrayAdapter {
 
     Context context;
-    ArrayList<State> list;
-    ArrayList<State>stateList;
+    ArrayList<States> list;
+    ArrayList<States>stateList;
 
-    public FilterAdapter(@NonNull Context context,  ArrayList<State> list) {
+    public FilterAdapter(@NonNull Context context,  ArrayList<States> list) {
         super(context, R.layout.filter_list,list);
         this.list = list;
         this.context = context;
@@ -34,8 +34,8 @@ public class FilterAdapter extends ArrayAdapter {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final FilterListBinding binding = FilterListBinding.inflate(LayoutInflater.from(parent.getContext()));
         try {
-            final State state = list.get(position);
-            binding.tvState.setText(state.getStateList());
+            final States state = list.get(position);
+            binding.tvState.setText(state.getStateName());
             if (state.isCheck()) {
                 binding.checkLoaded.setVisibility(View.VISIBLE);
                 binding.cLoaded.setVisibility(View.GONE);
@@ -63,7 +63,7 @@ public class FilterAdapter extends ArrayAdapter {
         }
         return binding.getRoot();
     }
-    public ArrayList<State> getSelectedState(){
+    public ArrayList<States> getSelectedState(){
         return stateList;
     }
 

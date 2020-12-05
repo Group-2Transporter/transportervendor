@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.e.transportervendor.ProgressBar;
 import com.e.transportervendor.R;
 import com.e.transportervendor.adapter.CompletedLeadsShowAdapter;
 import com.e.transportervendor.adapter.MarketListShowAdapter;
@@ -43,6 +44,7 @@ import retrofit2.Response;
 public class HistoryFragment extends Fragment {
     HistoryFragmentBinding history;
     String currentUserId;
+    ProgressBar pd;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -87,11 +89,15 @@ public class HistoryFragment extends Fragment {
     }
 
     private void getAllCompletedLeads(){
+        pd =new ProgressBar(getActivity());
+        pd.startLoadingDialog();
+
         LeadService.LeadApi leadApi = LeadService.getTransporterApiIntance();
         Call<ArrayList<Lead>> call = leadApi.getAllCompletedLeads(currentUserId);
         call.enqueue(new Callback<ArrayList<Lead>>() {
             @Override
             public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
+                pd.dismissDialog();
                 if (response.code() == 200) {
                     try {
                         ArrayList<Lead> leadList = response.body();
@@ -108,17 +114,21 @@ public class HistoryFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<Lead>> call, Throwable t) {
+                pd.dismissDialog();
                 Toast.makeText(getContext(), ""+t, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void getAllPendingBids(){
+        pd = new ProgressBar(getActivity());
+        pd.startLoadingDialog();
         final BidService.BidApi bidApi = BidService.getBidApiInstance();
         Call<ArrayList<Bid>> call  = bidApi.getAllPendingBids(currentUserId);
         call.enqueue(new Callback<ArrayList<Bid>>() {
             @Override
             public void onResponse(Call<ArrayList<Bid>> call, Response<ArrayList<Bid>> response) {
+                pd.dismissDialog();
                 if(response.code() == 200) {
                     try {
                         final ArrayList<Bid> bidList = response.body();
@@ -178,6 +188,7 @@ public class HistoryFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<Bid>> call, Throwable t) {
+                pd.dismissDialog();
                 Toast.makeText(getContext(), ""+t, Toast.LENGTH_SHORT).show();
             }
         });

@@ -23,6 +23,7 @@ import retrofit2.Response;
 public class HistoryActivity extends AppCompatActivity {
     ActivityHistoryBinding binding;
     String currentUserId;
+    ProgressBar pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +31,13 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         currentUserId = FirebaseAuth.getInstance().getUid();
         LeadService.LeadApi leadApi = LeadService.getTransporterApiIntance();
+        pd = new ProgressBar(this);
+        pd.startLoadingDialog();
         Call<ArrayList<Lead>> call = leadApi.getAllCompletedLeads(currentUserId);
         call.enqueue(new Callback<ArrayList<Lead>>() {
             @Override
             public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
+                pd.dismissDialog();
                 if (response.code() == 200) {
                     try {
                         ArrayList<Lead> leadList = response.body();
@@ -50,6 +54,7 @@ public class HistoryActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ArrayList<Lead>> call, Throwable t) {
+                pd.dismissDialog();
                 Toast.makeText(HistoryActivity.this, ""+t, Toast.LENGTH_SHORT).show();
             }
         });

@@ -36,7 +36,7 @@ public class HomeCurrentLoadShowAdapter extends RecyclerView.Adapter<HomeCurrent
         Lead lead = leadList.get(position);
         try {
             holder.binding.tvAddress.setText(lead.getPickUpAddress() + " To " + lead.getDeliveryAddress());
-            holder.binding.tvTypeOfaterial.setText(lead.getTypeOfMaterial());
+            holder.binding.tvTypeOfMaterial.setText(lead.getTypeOfMaterial());
             holder.binding.tvCLDate.setText(lead.getDateOfCompletion());
             holder.binding.tvUserName.setText(lead.getUserName());
             holder.binding.tvWeight.setText(lead.getWeight());

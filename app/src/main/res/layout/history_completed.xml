@@ -33,7 +33,7 @@
                 android:id="@+id/tvDate"
                 style="@style/confirm_load_textView"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="45dp"
+                android:layout_marginTop="60dp"
                 android:text="3/12/2020"
 
                 android:layout_marginRight="5dp"
@@ -41,18 +41,20 @@
                 android:layout_alignParentEnd="true"/>
 
             <LinearLayout
+                android:padding="2dp"
                 android:id="@+id/llLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginBottom="-3dp"
-                    android:src="@drawable/location" />
+                    android:src="@drawable/location_blue" />
 
                 <TextView
+                    android:layout_marginLeft="5dp"
                     android:id="@+id/tvAddress"
                     android:scrollIndicators="start"
                     style="@style/confirm_load_textView"
@@ -66,40 +68,27 @@
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/lll"
-                android:layout_marginLeft="6dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/llLocation"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_marginTop="5dp"
+
+                    android:padding="2dp"
+                    android:layout_marginTop="10dp"
                     android:id="@+id/llMaterialType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/llLocation"
                     android:baselineAligned="false">
-
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/client"/>
                     <TextView
-                        style="@style/confirm_load_textView"
-                        android:layout_width="wrap_content"
-                        android:text="Material : " />
-
-                    <TextView
-                        android:id="@+id/tvTypeOfMaterial"
-                        style="@style/confirm_load_textView"
-                        android:layout_width="wrap_content"
-                        android:text="Steel" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_marginTop="5dp"
-                    android:id="@+id/llName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/llMaterialType">
-
-                    <TextView
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginTop="3dp"
                         style="@style/confirm_load_textView"
                         android:layout_width="wrap_content"
                         android:text="Client Name : "
@@ -107,10 +96,41 @@
                         />
 
                     <TextView
+                        android:layout_marginTop="3dp"
                         android:id="@+id/tvUserName"
                         style="@style/confirm_load_textView"
                         android:layout_width="wrap_content"
                         android:text="User of App" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="7dp"
+                    android:id="@+id/llName"
+                    android:padding="2dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/llMaterialType">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:scaleType="fitXY"
+                        android:layout_marginTop="2dp"
+                        android:src="@drawable/material"/>
+
+                    <TextView
+                        android:layout_marginTop="3dp"
+                        android:layout_marginLeft="6dp"
+                        style="@style/confirm_load_textView"
+                        android:layout_width="wrap_content"
+                        android:text="Material : " />
+
+                    <TextView
+                        android:layout_marginTop="3dp"
+                        android:id="@+id/tvTypeOfMaterial"
+                        style="@style/confirm_load_textView"
+                        android:layout_width="wrap_content"
+                        android:text="Steel" />
+
 
                 </LinearLayout>
 
@@ -120,9 +140,17 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/llName">
 
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/weight" />
+
                     <TextView
                         style="@style/confirm_load_textView"
                         android:layout_width="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="4dp"
                         android:text="Weight : "
 
                         />
@@ -131,20 +159,28 @@
                         android:id="@+id/tvWeight"
                         style="@style/confirm_load_textView"
                         android:layout_width="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:text="200" />
+
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_marginTop="5dp"
+                    android:padding="2dp"
+                    android:layout_marginTop="7dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/llName">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/rupee"/>
 
                     <TextView
+                        android:layout_marginLeft="6dp"
                         style="@style/confirm_load_textView"
                         android:layout_width="wrap_content"
-                        android:text="Rate : "
+                        android:text="Amount : "
 
                         />
 
