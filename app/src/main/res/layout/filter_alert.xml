@@ -9,28 +9,51 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
+        <RelativeLayout
+            android:id="@+id/rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <TextView
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:gravity="center_vertical"
-            android:text="Operating Routes"
+            android:text="Select Routes"
+            android:textSize="24sp"
             android:textColor="@color/black"
             android:id="@+id/tvRoutes"
             android:textStyle="bold"
             />
         <TextView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="X"
             android:gravity="center"
             android:textSize="30sp"
+            android:layout_marginRight="20dp"
             android:textColor="#F41A0A"
             android:layout_alignParentEnd="true"
             android:id="@+id/ivCancel"/>
 
-
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_below="@+id/rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <androidx.appcompat.widget.SearchView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                app:queryHint="Search States"
+                app:iconifiedByDefault="false"
+                android:layout_marginRight="10dp"
+                android:inputType="text|textCapWords"
+                android:padding="5dp"
+                android:outlineAmbientShadowColor="@color/black"
+                android:hint="Search..."
+                android:id="@+id/search"/>
+        </LinearLayout>
     </RelativeLayout>
 
     <ListView

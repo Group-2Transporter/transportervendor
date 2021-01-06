@@ -1,7 +1,10 @@
 package com.e.transportervendor;
 
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Build;
 import android.widget.Toast;
 
@@ -23,6 +26,8 @@ import retrofit2.Response;
 
 public class ReceivingPushNotification extends FirebaseMessagingService {
     String currentUserId;
+    Intent intent ;
+    PendingIntent pendingIntent;
 
     @Override
     public void onNewToken(String token) {
@@ -36,7 +41,21 @@ public class ReceivingPushNotification extends FirebaseMessagingService {
             Map<String, String> map = remoteMessage.getData();
             String title = map.get("title");
             String description = map.get("body");
+            String resultCode = map.get("resultCode");
+            String userId = map.get("userId");
+            String leadId = map.get("leadId");
+            if(resultCode.equalsIgnoreCase("message")){
+                intent = new Intent(this,ChatActivity.class);
+                intent.putExtra("userId",userId);
+                intent.putExtra("leadId",leadId);
+            }else if(resultCode.equalsIgnoreCase("Bid")){
+                intent = new Intent(this, MainActivity.class);
+                intent.putExtra("newBid","newBid");
+            }else if(resultCode.equalsIgnoreCase("accept")){
+                intent = new Intent(this,MainActivity.class);
+            }
 
+            pendingIntent = PendingIntent.getActivity(this,1,intent,PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             String channelId = "My id";
             String channelName = "My channel";
@@ -49,11 +68,14 @@ public class ReceivingPushNotification extends FirebaseMessagingService {
             nb.setContentTitle(title);
             nb.setContentText(description);
             nb.setSmallIcon(R.drawable.eagleshipperlogo);
+            nb.setAutoCancel(true);
+            nb.setContentIntent(pendingIntent);
             manager.notify(1, nb.build());
         }catch (Exception e){
             Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void updateToken(final String token) {
         currentUserId = FirebaseAuth.getInstance().getUid();

@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.e.transportervendor.ManageVehicleActivity;
 import com.e.transportervendor.ProgressBar;
 import com.e.transportervendor.R;
 import com.e.transportervendor.adapter.CompletedLeadsShowAdapter;
@@ -30,9 +31,12 @@ import com.e.transportervendor.api.BidService;
 import com.e.transportervendor.api.LeadService;
 import com.e.transportervendor.bean.Bid;
 import com.e.transportervendor.bean.Lead;
+import com.e.transportervendor.bean.Vehicle;
+import com.e.transportervendor.databinding.DeleteAlertDialogBinding;
 import com.e.transportervendor.databinding.FilterAlertBinding;
 import com.e.transportervendor.databinding.HistoryFragmentBinding;
 import com.e.transportervendor.utility.InternetUtilityActivity;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -99,16 +103,19 @@ public class HistoryFragment extends Fragment {
             public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
                 pd.dismissDialog();
                 if (response.code() == 200) {
+                    history.rv.setVisibility(View.VISIBLE);
+                    history.noRecords.setVisibility(View.GONE);
                     try {
                         ArrayList<Lead> leadList = response.body();
-                        if (leadList != null) {
                             CompletedLeadsShowAdapter adapter = new CompletedLeadsShowAdapter(leadList);
                             history.rv.setAdapter(adapter);
                             history.rv.setLayoutManager(new LinearLayoutManager(getContext()));
-                        }
                     }catch (Exception e){
                         Toast.makeText(getContext(), ""+e.toString(), Toast.LENGTH_SHORT).show();
                     }
+                }else if(response.code() == 404){
+                    history.rv.setVisibility(View.GONE);
+                    history.noRecords.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -130,9 +137,11 @@ public class HistoryFragment extends Fragment {
             public void onResponse(Call<ArrayList<Bid>> call, Response<ArrayList<Bid>> response) {
                 pd.dismissDialog();
                 if(response.code() == 200) {
+                    history.rv.setVisibility(View.VISIBLE);
+                    history.noRecords.setVisibility(View.GONE);
                     try {
                         final ArrayList<Bid> bidList = response.body();
-                        if (bidList != null) {
+                        if (bidList != null && bidList.size()>0) {
                             final MarketListShowAdapter adapter = new MarketListShowAdapter(bidList, "cancel");
                             history.rv.setAdapter(adapter);
                             history.rv.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -144,20 +153,33 @@ public class HistoryFragment extends Fragment {
 
                                 @Override
                                 public void onCancelButton(final Bid bid, final int position) {
-                                    AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
-                                    ab.setMessage("Are you sure to Cancel bid ?");
-                                    ab.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                    final AlertDialog ab = new AlertDialog.Builder(getContext()).create();
+                                    final DeleteAlertDialogBinding deleteBinding = DeleteAlertDialogBinding.inflate(LayoutInflater.from(getActivity()));
+                                    ab.setView(deleteBinding.getRoot());
+                                    ab.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                                    ab.setCancelable(false);
+                                    deleteBinding.civIcon.setImageResource(R.drawable.cross);
+                                    deleteBinding.tvDeleteLead.setText("Cancel Bid");
+                                    deleteBinding.btnConfirm.setOnClickListener(new View.OnClickListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if(InternetUtilityActivity.isNetworkConnected(getContext())) {
+                                        public void onClick(View v) {
+                                            pd = new ProgressBar(getActivity());
+                                            pd.startLoadingDialog();
+                                            if (InternetUtilityActivity.isNetworkConnected(getActivity())) {
                                                 Call<Bid> call = bidApi.deleteBid(bid.getBidId());
                                                 call.enqueue(new Callback<Bid>() {
                                                     @Override
                                                     public void onResponse(Call<Bid> call, Response<Bid> response) {
+                                                        pd.dismissDialog();
+                                                        ab.dismiss();
                                                         if (response.code() == 200) {
                                                             try {
                                                                 Toast.makeText(getContext(), "Cancel Bid  Successfully", Toast.LENGTH_SHORT).show();
                                                                 bidList.remove(position);
+                                                                if (bidList.size() == 0) {
+                                                                    history.rv.setVisibility(View.GONE);
+                                                                    history.noRecords.setVisibility(View.VISIBLE);
+                                                                }
                                                                 adapter.notifyDataSetChanged();
                                                             } catch (Exception e) {
                                                                 Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -167,22 +189,48 @@ public class HistoryFragment extends Fragment {
 
                                                     @Override
                                                     public void onFailure(Call<Bid> call, Throwable t) {
+                                                        pd.dismissDialog();
+                                                        ab.dismiss();
                                                         Toast.makeText(getContext(), "" + t, Toast.LENGTH_SHORT).show();
                                                     }
                                                 });
-                                            }else{
+                                            } else {
                                                 getInternetAlert();
                                             }
                                         }
                                     });
-                                    ab.setNegativeButton("Cancel", null);
+                                    deleteBinding.btnCancel.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            ab.dismiss();
+                                        }
+                                    });
                                     ab.show();
+//                                    ab.setMessage("Are you sure to Cancel bid ?");
+//                                    ab.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            if(InternetUtilityActivity.isNetworkConnected(getContext())) {
+
+//                                            }else{
+//                                                getInternetAlert();
+//                                            }
+//                                        }
+//                                    });
+//                                    ab.setNegativeButton("Cancel", null);
+//                                    ab.show();
                                 }
                             });
+                        }else{
+                            history.rv.setVisibility(View.GONE);
+                            history.noRecords.setVisibility(View.VISIBLE);
                         }
                     }catch (Exception e){
                         Toast.makeText(getContext(), ""+e.toString(), Toast.LENGTH_SHORT).show();
                     }
+                }else if(response.code() == 404){
+                    history.rv.setVisibility(View.GONE);
+                    history.noRecords.setVisibility(View.VISIBLE);
                 }
             }
 

@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -109,6 +111,8 @@ public class MarketFragment extends Fragment {
                 public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
                     pd.dismissDialog();
                     if (response.code() == 200) {
+                        market.noRecords.setVisibility(View.GONE);
+                        market.rv.setVisibility(View.VISIBLE);
                         final ArrayList<Lead> bidList = response.body();
                         try {
                             adapter = new MarketListShowAdapter(bidList);
@@ -119,6 +123,10 @@ public class MarketFragment extends Fragment {
                                 public void onItemClick(Lead lead, final int positon) {
                                     BidBottomSheetFragment bottomSheetFragment = new BidBottomSheetFragment(lead, currentUserId, name, bidList, adapter, positon);
                                     bottomSheetFragment.show(getFragmentManager(), "");
+                                    if(bidList.size() == 0){
+                                        market.noRecords.setVisibility(View.VISIBLE);
+                                        market.rv.setVisibility(View.GONE);
+                                    }
                                 }
 
                                 @Override
@@ -127,10 +135,12 @@ public class MarketFragment extends Fragment {
                                 }
                             });
                         } catch (Exception e) {
+                            pd.dismissDialog();
                             Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     } else if (response.code() == 404) {
-                        Toast.makeText(getContext(), "Match Bid Not Found", Toast.LENGTH_SHORT).show();
+                        market.rv.setVisibility(View.GONE);
+                        market.noRecords.setVisibility(View.VISIBLE);
                     }else if(response.code() == 500){
                         Toast.makeText(getContext(), "Server not found", Toast.LENGTH_SHORT).show();
                     }
@@ -138,6 +148,7 @@ public class MarketFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<ArrayList<Lead>> call, Throwable t) {
+                    pd.dismissDialog();
                     Toast.makeText(getContext(), "" + t, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -170,6 +181,7 @@ public class MarketFragment extends Fragment {
         ab.setCancelable(false);
         final FilterAdapter adapter = new FilterAdapter(getContext(), state);
         filterAlert.rv.setAdapter(adapter);
+
         filterAlert.ivCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,6 +204,28 @@ public class MarketFragment extends Fragment {
 
             }
         });
+        filterAlert.search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ArrayList<States> result = new ArrayList<>();
+
+                for (States s : state){
+                    if(s.getStateName().contains(newText)){
+                        result.add(s);
+                    }
+                }
+                adapter.update(result);
+
+                return false;
+            }
+        });
+
         ab.show();
     }
 
@@ -205,6 +239,8 @@ public class MarketFragment extends Fragment {
                 public void onResponse(Call<ArrayList<Lead>> call, Response<ArrayList<Lead>> response) {
                     pd.dismissDialog();
                     if (response.code() == 200) {
+                        market.noRecords.setVisibility(View.GONE);
+                        market.rv.setVisibility(View.VISIBLE);
                         final ArrayList<Lead> bidList = response.body();
                         try {
                             adapter = new MarketListShowAdapter(bidList);
@@ -215,6 +251,10 @@ public class MarketFragment extends Fragment {
                                 public void onItemClick(Lead lead, final int positon) {
                                     BidBottomSheetFragment bottomSheetFragment = new BidBottomSheetFragment(lead, currentUserId, name, bidList, adapter, positon);
                                     bottomSheetFragment.show(getFragmentManager(), "");
+                                    if(bidList.size() == 0){
+                                        market.noRecords.setVisibility(View.VISIBLE);
+                                        market.rv.setVisibility(View.GONE);
+                                    }
                                 }
 
                                 @Override
@@ -226,7 +266,8 @@ public class MarketFragment extends Fragment {
                             Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     } else if (response.code() == 404) {
-                        Toast.makeText(getContext(), "Match Bid Not Found", Toast.LENGTH_SHORT).show();
+                        market.noRecords.setVisibility(View.VISIBLE);
+                        market.rv.setVisibility(View.GONE);
                     } else if (response.code() == 500) {
                         Toast.makeText(getContext(), "Server not respond", Toast.LENGTH_SHORT).show();
                     }

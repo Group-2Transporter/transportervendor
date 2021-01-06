@@ -1,5 +1,6 @@
 package com.e.transportervendor;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,6 +46,7 @@ public class SplashActivity extends AppCompatActivity {
                         positive.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+
                                 if (InternetUtilityActivity.isNetworkConnected(SplashActivity.this)) {
                                     ab.dismiss();
                                     if (curretUser != null)
@@ -52,6 +54,7 @@ public class SplashActivity extends AppCompatActivity {
                                     else
                                         navigateUserToLoginActivity();
                                 }
+                                startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
                             }
                         });
                     }
