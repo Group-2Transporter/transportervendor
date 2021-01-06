@@ -2,32 +2,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="5dp"
-    android:layout_height="wrap_content">
+    android:padding="5dp">
+
     <LinearLayout
         android:id="@+id/llDown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <ImageView
             android:id="@+id/down"
             android:layout_width="50dp"
             android:layout_height="40dp"
-            android:src="@drawable/down"
+            android:layout_gravity="center_horizontal"
             android:scaleType="fitXY"
-            android:layout_gravity="center_horizontal"/>
+            android:src="@drawable/down" />
 
     </LinearLayout>
 
     <androidx.cardview.widget.CardView
-        android:layout_below="@id/llDown"
         android:id="@+id/cardLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="5dp"
-        android:layout_margin="10dp">
+        android:layout_below="@id/llDown"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,28 +56,29 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        app:cardCornerRadius="5dp"
-        android:layout_width="match_parent"
         android:id="@+id/cardMaterial"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/cardLocation"
         android:layout_margin="10dp"
-        >
+        app:cardCornerRadius="5dp">
+
         <LinearLayout
-            android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_marginTop="10dp"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/material"
-                    />
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/material" />
 
                 <TextView
                     android:id="@+id/tvTypeOfMaterial"
@@ -86,13 +88,14 @@
                     android:layout_marginTop="10dp"
                     android:text="Material : Steel"
                     android:textSize="14sp" />
+
                 <ImageView
-                    android:layout_marginTop="10dp"
                     android:layout_width="20dp"
                     android:layout_height="18dp"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/weight"
-                    />
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/weight" />
+
                 <TextView
                     android:id="@+id/tvWeight"
                     android:layout_width="wrap_content"
@@ -104,15 +107,18 @@
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_marginTop="10dp"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/date"/>
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/date" />
+
                 <TextView
                     android:id="@+id/tvDate"
                     android:layout_width="wrap_content"
@@ -122,17 +128,18 @@
                     android:text="Expiry Date : Steel"
                     android:textSize="14sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_marginTop="12dp"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/client"
-                    />
+                    android:layout_marginTop="12dp"
+                    android:src="@drawable/client" />
 
 
                 <TextView
@@ -157,57 +164,149 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        app:cardCornerRadius="5dp"
         android:id="@+id/cardRate"
-        android:layout_below="@+id/cardMaterial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/cardMaterial"
         android:layout_margin="10dp"
-        >
+        app:cardCornerRadius="5dp">
+
         <LinearLayout
-            android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioGroup
+                    android:id="@+id/checkedGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:checked="true"
+                        android:id="@+id/btnFixed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/remark_border"
+                        android:paddingLeft="5dp"
+                        android:paddingTop="4dp"
+                        android:buttonTint="@color/blue"
+                        android:textIsSelectable="true"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="Fixed"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/remark_border"
+                        android:gravity="center"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:buttonTint="@color/blue"
+                        android:paddingLeft="5dp"
+                        android:paddingTop="4dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="Per Ton"
+                        android:id="@+id/btnPerTon"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/btnKm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/remark_border"
+                        android:paddingLeft="5dp"
+                        android:paddingTop="4dp"
+                        android:buttonTint="@color/blue"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="Per Km"
+                        android:textSize="14sp" />
+                </RadioGroup>
+
+            </LinearLayout>
+
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:placeholderText="INR 2000"
-                app:placeholderTextColor="#9E9494"
                 android:backgroundTint="@color/black"
-                android:hint="Enter Your Rate"
-                >
+                android:id="@+id/tvLayout"
+                android:hint="Enter Fixed Price"
+                android:layout_marginTop="5dp"
+                app:placeholderText="INR 2000"
+                app:placeholderTextColor="#9E9494">
+
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etRate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/etRate"
-                    android:textSize="14sp"
                     android:includeFontPadding="false"
                     android:inputType="number"
-                    />
+                    android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#D6F4B3"
+                android:id="@+id/totalAmount"
+                android:visibility="gone"
+                android:orientation="horizontal">
+                <TextView
+                    android:padding="7dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvType"
+                    android:textSize="11dp"
+                    android:text="Freight Amount (Rate * Number of Tonnes)"/>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
+                    <TextView
+                        android:layout_marginLeft="3dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:textAlignment="viewEnd"
+                        android:textSize="13sp"
+                        android:text="₹  0"
+                        android:layout_marginRight="10dp"
+                        android:id="@+id/tvTotal"/>
+
+
+                </RelativeLayout>
+            </LinearLayout>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Remark"
                 android:textStyle="bold"
-                app:placeholderText="Please enter your Remark here !"
-                android:hint="Remark"/>
+                app:placeholderText="Please enter your Remark here !" />
+
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etRemark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lines="4"
-                android:textSize="14sp"
                 android:layout_marginTop="5dp"
-                android:hint="Enter Remark Here..!"
-                android:padding="10dp"
-                android:includeFontPadding="false"
-                android:id="@+id/etRemark"
                 android:background="@drawable/remark_border"
-                android:textAlignment="textStart"
                 android:gravity="start"
-                />
-
+                android:hint="Enter Remark Here..!"
+                android:includeFontPadding="false"
+                android:lines="4"
+                android:padding="10dp"
+                android:textAlignment="textStart"
+                android:textSize="14sp" />
 
 
         </LinearLayout>
@@ -216,24 +315,23 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:layout_below="@+id/cardRate"
-        android:layout_margin="14dp"
-        app:cardCornerRadius="4dp"
+        android:id="@+id/btnBid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="5dp"
-        android:id="@+id/btnBid"
+        android:layout_below="@+id/cardRate"
+        android:layout_margin="14dp"
         app:cardBackgroundColor="@color/blue"
-        >
+        app:cardCornerRadius="4dp"
+        app:cardElevation="5dp">
+
         <TextView
-            android:textSize="20sp"
-            android:padding="10dp"
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
             android:text="Bid Now"
             android:textColor="@color/white"
-            />
+            android:textSize="20sp" />
     </androidx.cardview.widget.CardView>
 
 

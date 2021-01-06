@@ -10,6 +10,30 @@
         app:title="Manage Vehicles"
         app:titleTextColor="@color/white"
         />
+    <LinearLayout
+        android:layout_below="@id/toolbar"
+        android:visibility="gone"
+        android:id="@+id/noRecords"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        >
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/not_found"
+            />
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:text="No Records"
+            android:gravity="center"/>
+
+
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
         android:layout_below="@id/toolbar"

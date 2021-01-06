@@ -3,10 +3,13 @@ package com.e.transportervendor.fragment;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,10 +46,12 @@ public class BidBottomSheetFragment extends BottomSheetDialogFragment {
     Lead lead;
     String currentUserId;
     String transporterName;
+    String rateType;
     ArrayList<Lead> leadList;
     MarketListShowAdapter adapter;
     int position ;
     String userToken;
+    double total;
     public BidBottomSheetFragment(Lead lead, String currentUserId, String transporterName, ArrayList<Lead> leadList, MarketListShowAdapter adapter, int position){
         this.lead = lead;
         this.currentUserId =currentUserId;
@@ -86,6 +91,55 @@ public class BidBottomSheetFragment extends BottomSheetDialogFragment {
             binding.tvTypeOfMaterial.setText("Material : "+lead.getTypeOfMaterial());
             binding.tvWeight.setText("Weight : "+lead.getWeight());
             binding.tvDate.setText("Expiry Date : "+lead.getDateOfCompletion());
+            binding.checkedGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    switch (checkedId){
+                        case R.id.btnFixed :
+                            rateType = "fixed";
+                            binding.tvLayout.setHint("Enter Fixed Price");
+                            binding.totalAmount.setVisibility(View.GONE);
+                            break;
+                        case R.id.btnPerTon:
+                            rateType = "perTon";
+                            binding.tvLayout.setHint("Enter Per Ton Rate");
+                            binding.totalAmount.setVisibility(View.VISIBLE);
+                            binding.tvType.setText("Freight Amount (Rate * Number of Tonnes)");
+                            break;
+                        case R.id.btnKm :
+                            rateType = "km";
+                            binding.tvLayout.setHint("Enter Per Km Rate");
+                            binding.totalAmount.setVisibility(View.VISIBLE);
+                            binding.tvType.setText("Freight Amount (Rate * Number of Km)");
+                            break;
+                    }
+                }
+            });
+            String w[] = lead.getWeight().split(" ");
+            final long mult = Integer.parseInt(w[0]);
+            binding.etRate.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if(s.length()!=0){
+                        long total = Integer.parseInt(s.toString());
+                        double amount = mult * total;
+                        binding.tvTotal.setText("₹  "+amount);
+                    }else{
+                        binding.tvTotal.setText("₹  0");
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+
             final BidService.BidApi bidApi = BidService.getBidApiInstance();
             binding.btnBid.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -96,6 +150,7 @@ public class BidBottomSheetFragment extends BottomSheetDialogFragment {
                         return;
                     }
                     long amount = Long.parseLong(rate);
+
                     String remark = binding.etRemark.getText().toString();
                     if (remark.isEmpty()) {
                         binding.etRemark.setError("please enter Remark");
@@ -144,8 +199,14 @@ public class BidBottomSheetFragment extends BottomSheetDialogFragment {
             String url = "https://fcm.googleapis.com/fcm/send";
 
             JSONObject data = new JSONObject();
-            data.put("title", "Bidded Request");
-            data.put("body", "From " + bid.getTransporterName());
+            data.put("title", "Send Bid Request");
+            data.put("body", "By " + bid.getTransporterName());
+
+            data.put("resultCode","Bid");
+            data.put("transporterId",currentUserId);
+            data.put("leadId",bid.getLeadId());
+            String address = lead.getPickUpAddress()+" To "+lead.getDeliveryAddress();
+            data.put("location",address);
 
             JSONObject notification_data = new JSONObject();
             notification_data.put("data", data);

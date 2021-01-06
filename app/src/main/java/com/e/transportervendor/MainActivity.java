@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         sp = getSharedPreferences("transporter", MODE_PRIVATE);
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this));
         setContentView(binding.getRoot());
+        Intent i = getIntent();
+        String newBid = (String) i.getCharSequenceExtra("newBid");
         try {
             String name = sp.getString("name","not_found");
             String image = sp.getString("image","not_found");
@@ -64,8 +66,15 @@ public class MainActivity extends AppCompatActivity {
             currentUserId = FirebaseAuth.getInstance().getUid();
             binding.bottomNav.setItemIconTintList(null);
             binding.navDrawer.setItemIconTintList(null);
-            getFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame, new HomeFragment()).commit();
+            if(newBid!=null && newBid.equalsIgnoreCase("newBid")) {
+                Toast.makeText(this, "New Bid Received", Toast.LENGTH_SHORT).show();
+                getFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame,new MarketFragment()).commit();
+                binding.bottomNav.setSelectedItemId(R.id.nav_market);
+            }else {
+                getFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame, new HomeFragment()).commit();
+            }
             getDrawer();
             setSupportActionBar(binding.toolbar);
             toggle = new ActionBarDrawerToggle(this, binding.drawer, binding.toolbar, R.string.open, R.string.close);
@@ -100,23 +109,24 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(i);
                         break;
                     case R.id.about:
-//                       Intent intent = new Intent(MainActivity.this,ManageVehicleActivity.class);
-//                       startActivity(intent);
                         Toast.makeText(MainActivity.this, "About us", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.contact:
                         break;
                     case R.id.nav_home:
                         selected = new HomeFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame,selected).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame,selected).commitNow();
+                        binding.bottomNav.setSelectedItemId(R.id.nav_home);
                         break;
                     case R.id.nav_market:
                         selected = new MarketFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame,selected).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame,selected).commitNow();
+                        binding.bottomNav.setSelectedItemId(R.id.nav_market);
                         break;
                     case R.id.nav_history:
                         selected = new HistoryFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame,selected).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame,selected).commitNow();
+                        binding.bottomNav.setSelectedItemId(R.id.nav_history);
                         break;
                     case R.id.logout:
                         if(InternetUtilityActivity.isNetworkConnected(MainActivity.this)) {
@@ -173,8 +183,6 @@ public class MainActivity extends AppCompatActivity {
         if(currentUserId == null){
             sendUserToLoginActivity();
         }else{
-            String id = sp.getString("transporterId","not_found");
-            if(id.equals("not_found"))
                 updateProfile();
         }
     }
@@ -201,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
                             call1.enqueue(new Callback<Transporter>() {
                                 @Override
                                 public void onResponse(Call<Transporter> call, Response<Transporter> response) {
-                                    Toast.makeText(MainActivity.this, ""+response.code(), Toast.LENGTH_SHORT).show();
                                     if(response.code() == 200){
                                         saveTransporterLocally(response.body());
                                     }

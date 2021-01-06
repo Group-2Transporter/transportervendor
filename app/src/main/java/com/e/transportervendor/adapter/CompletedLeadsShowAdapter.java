@@ -45,7 +45,7 @@ public class CompletedLeadsShowAdapter extends RecyclerView.Adapter<CompletedLea
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final CompletedViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final CompletedViewHolder holder, final int position) {
         try {
             final Lead lead = leadList.get(position);
             String[] pickup = lead.getPickUpAddress().split(",");
@@ -80,6 +80,7 @@ public class CompletedLeadsShowAdapter extends RecyclerView.Adapter<CompletedLea
                                                     @Override
                                                     public void onResponse(Call<Lead> call, Response<Lead> response) {
                                                         if(response.code() == 200){
+                                                            leadList.remove(position);
                                                             Toast.makeText(holder.itemView.getContext(), "Completed Load Deleted", Toast.LENGTH_SHORT).show();
                                                             notifyDataSetChanged();
                                                         }else{

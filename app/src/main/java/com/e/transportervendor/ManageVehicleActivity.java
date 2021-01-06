@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import com.e.transportervendor.api.TransporterServices;
 import com.e.transportervendor.api.VehicleService;
 import com.e.transportervendor.bean.Transporter;
 import com.e.transportervendor.bean.Vehicle;
+import com.e.transportervendor.databinding.DeleteAlertDialogBinding;
 import com.e.transportervendor.databinding.ManageVehicleBinding;
 import com.e.transportervendor.utility.InternetUtilityActivity;
 import com.google.android.material.snackbar.Snackbar;
@@ -60,7 +62,9 @@ public class ManageVehicleActivity extends AppCompatActivity {
                             try {
                                 Transporter t = response.body();
                                 vehicleList = t.getVehicle();
-                                if(t.getVehicle()!=null) {
+                                if(t.getVehicle()!=null && t.getVehicle().size()!=0) {
+                                    manageVehicleBinding.rv.setVisibility(View.VISIBLE);
+                                    manageVehicleBinding.noRecords.setVisibility(View.GONE);
                                     adapter = new ShowVehicleListAdapter(vehicleList);
                                     manageVehicleBinding.rv.setAdapter(adapter);
                                     manageVehicleBinding.rv.setLayoutManager(new LinearLayoutManager(ManageVehicleActivity.this));
@@ -68,15 +72,17 @@ public class ManageVehicleActivity extends AppCompatActivity {
                                         @Override
                                         public void onItemClick(final Vehicle vehicle, final int postion, final String status) {
                                             if (status.equalsIgnoreCase("Delete")) {
-                                                AlertDialog.Builder ab = new AlertDialog.Builder(ManageVehicleActivity.this);
-                                                ab.setTitle("Delete");
-                                                ab.setMessage("Are You Sure ?");
-                                                ab.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                                final AlertDialog ab = new AlertDialog.Builder(ManageVehicleActivity.this).create();
+                                                final DeleteAlertDialogBinding deleteBinding = DeleteAlertDialogBinding.inflate(LayoutInflater.from(ManageVehicleActivity.this));
+                                                ab.setView(deleteBinding.getRoot());
+                                                ab.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                                                ab.setCancelable(false);
+                                                deleteBinding.tvDeleteLead.setText("Delete Vehicle");
+                                                deleteBinding.btnConfirm.setOnClickListener(new View.OnClickListener() {
                                                     @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        final ProgressDialog pd1 = new ProgressDialog(ManageVehicleActivity.this);
-                                                        pd1.setMessage("Delete Vehicles");
-                                                        pd1.show();
+                                                    public void onClick(View v) {
+                                                        final ProgressBar pd1 = new ProgressBar(ManageVehicleActivity.this);
+                                                        pd1.startLoadingDialog();
                                                         if (InternetUtilityActivity.isNetworkConnected(ManageVehicleActivity.this)) {
                                                             Call<Vehicle> call1 = vehicleApi.deleteTransporterVehicle(vehicle.getVehicelId(), currentUserId);
                                                             call1.enqueue(new Callback<Vehicle>() {
@@ -84,16 +90,22 @@ public class ManageVehicleActivity extends AppCompatActivity {
                                                                 public void onResponse(Call<Vehicle> call, Response<Vehicle> response) {
                                                                     if (response.code() == 200) {
                                                                         vehicleList.remove(postion);
+                                                                        if(vehicleList.size() == 0){
+                                                                            manageVehicleBinding.rv.setVisibility(View.GONE);
+                                                                            manageVehicleBinding.noRecords.setVisibility(View.VISIBLE);
+                                                                        }
                                                                         adapter.notifyDataSetChanged();
                                                                         Snackbar.make(manageVehicleBinding.rv, "Vehicle Delete Successfully", Snackbar.LENGTH_LONG);
                                                                     }
-                                                                    pd1.dismiss();
+                                                                    ab.dismiss();
+                                                                    pd1.dismissDialog();
                                                                 }
 
                                                                 @Override
                                                                 public void onFailure(Call<Vehicle> call, Throwable t) {
                                                                     Toast.makeText(ManageVehicleActivity.this, "" + t, Toast.LENGTH_SHORT).show();
-                                                                    pd1.dismiss();
+                                                                    pd1.dismissDialog(); 
+                                                                    ab.dismiss();
                                                                 }
                                                             });
                                                         } else {
@@ -101,9 +113,13 @@ public class ManageVehicleActivity extends AppCompatActivity {
                                                         }
                                                     }
                                                 });
-                                                ab.setNegativeButton("Cancel", null);
+                                                deleteBinding.btnCancel.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        ab.dismiss();
+                                                    }
+                                                });
                                                 ab.show();
-
                                             } else if (status.equalsIgnoreCase("Edit")) {
                                                 try {
                                                     Toast.makeText(ManageVehicleActivity.this, "hell", Toast.LENGTH_SHORT).show();
@@ -116,6 +132,9 @@ public class ManageVehicleActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
+                                }else{
+                                    manageVehicleBinding.noRecords.setVisibility(View.VISIBLE);
+                                    manageVehicleBinding.rv.setVisibility(View.GONE);
                                 }
 
                             } catch (Exception e) {

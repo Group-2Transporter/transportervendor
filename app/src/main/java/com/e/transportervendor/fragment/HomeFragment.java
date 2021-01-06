@@ -53,21 +53,22 @@ public class HomeFragment extends Fragment {
     LeadService.LeadApi leadApi;
     String currentUserId;
     String materialStatus;
-    String userToken;
+    User user;
     ProgressBar pd;
     ArrayList<Lead> leadList;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = HomeFragmentBinding.inflate(getLayoutInflater());
-        if(InternetUtilityActivity.isNetworkConnected(getContext())) {
+        if (InternetUtilityActivity.isNetworkConnected(getContext())) {
             try {
                 leadApi = LeadService.getTransporterApiIntance();
                 currentUserId = FirebaseAuth.getInstance().getUid();
-                if(InternetUtilityActivity.isNetworkConnected(getContext())) {
+                if (InternetUtilityActivity.isNetworkConnected(getContext())) {
                     Call<ArrayList<Lead>> call = leadApi.getCurrentLoadByTransporterId(currentUserId);
-                   pd = new ProgressBar(getActivity());
-                   pd.startLoadingDialog();
+                    pd = new ProgressBar(getActivity());
+                    pd.startLoadingDialog();
 
                     call.enqueue(new Callback<ArrayList<Lead>>() {
                         @Override
@@ -76,7 +77,9 @@ public class HomeFragment extends Fragment {
                             pd.dismissDialog();
                             if (response.code() == 200) {
                                 try {
-                                    if (leadApi != null) {
+                                    binding.noRecords.setVisibility(View.GONE);
+                                    binding.rv.setVisibility(View.VISIBLE);
+                                    if(leadList.size() != 0) {
                                         adapter = new HomeCurrentLoadShowAdapter(leadList);
                                         binding.rv.setAdapter(adapter);
                                         binding.rv.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -88,33 +91,37 @@ public class HomeFragment extends Fragment {
                                                 } else if (status.equalsIgnoreCase("Chat with Client")) {
                                                     Intent in = new Intent(getContext(), ChatActivity.class);
                                                     in.putExtra("userId", lead.getUserId());
-                                                    in.putExtra("leadId",lead.getLeadId());
+                                                    in.putExtra("leadId", lead.getLeadId());
                                                     startActivity(in);
                                                 }
                                             }
                                         });
-                                    } else {
-                                        Toast.makeText(getContext(), "No Records Found", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        binding.noRecords.setVisibility(View.VISIBLE);
+                                        binding.rv.setVisibility(View.GONE);
                                     }
                                 } catch (Exception e) {
                                     Toast.makeText(getContext(), "" + e.toString(), Toast.LENGTH_SHORT).show();
                                 }
+                            } else if (response.code() == 404) {
+                                binding.noRecords.setVisibility(View.VISIBLE);
+                                binding.rv.setVisibility(View.GONE);
                             }
                         }
 
                         @Override
                         public void onFailure(Call<ArrayList<Lead>> call, Throwable t) {
                             pd.dismissDialog();
-                            Toast.makeText(getContext(), ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "" + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-                }else{
+                } else {
                     getInternetAlert();
                 }
             } catch (Exception e) {
                 Toast.makeText(getContext(), "" + e.toString(), Toast.LENGTH_SHORT).show();
             }
-        }else{
+        } else {
             getInternetAlert();
         }
         return binding.getRoot();
@@ -131,7 +138,7 @@ public class HomeFragment extends Fragment {
         positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(InternetUtilityActivity.isNetworkConnected(getContext())) {
+                if (InternetUtilityActivity.isNetworkConnected(getContext())) {
                     ab.dismiss();
                 }
             }
@@ -140,12 +147,12 @@ public class HomeFragment extends Fragment {
 
     private void getStatusAlertDialog(final Lead lead, final int position) {
         UserService.UserApi userApi = UserService.getUserApiInstance();
-        Call<User> call = userApi.getUserById(currentUserId);
+        Call<User> call = userApi.getUserById(lead.getUserId());
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                if(response.code() == 200){
-                    userToken = response.body().getToken();
+                if (response.code() == 200) {
+                    user = response.body();
                 }
             }
 
@@ -159,11 +166,11 @@ public class HomeFragment extends Fragment {
         ab.setView(alertBinding.getRoot());
         ab.setCancelable(false);
         ab.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        if(lead.getMaterialStatus().equalsIgnoreCase("loaded")){
+        if (lead.getMaterialStatus().equalsIgnoreCase("loaded")) {
             alertBinding.rbLoaded.setChecked(true);
-        }else if(lead.getMaterialStatus().equalsIgnoreCase("inTransit")){
+        } else if (lead.getMaterialStatus().equalsIgnoreCase("inTransit")) {
             alertBinding.rbInTransit.setChecked(true);
-        }else if(lead.getMaterialStatus().equalsIgnoreCase("reached")){
+        } else if (lead.getMaterialStatus().equalsIgnoreCase("reached")) {
             alertBinding.rbReached.setChecked(true);
         }
         alertBinding.ivCancel.setOnClickListener(new View.OnClickListener() {
@@ -176,13 +183,13 @@ public class HomeFragment extends Fragment {
         alertBinding.radios.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                if(i == R.id.rbLoaded){
+                if (i == R.id.rbLoaded) {
                     materialStatus = "Loaded";
-                }else if(i==R.id.rbInTransit ){
+                } else if (i == R.id.rbInTransit) {
                     materialStatus = "inTransit";
-                }else if (i == R.id.rbReached){
+                } else if (i == R.id.rbReached) {
                     materialStatus = "Reached";
-                }else{
+                } else {
                     materialStatus = "Unloaded";
                 }
             }
@@ -191,12 +198,12 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 lead.setMaterialStatus(materialStatus);
-                if(materialStatus.equalsIgnoreCase("Unloaded")) {
+                if (materialStatus.equalsIgnoreCase("Unloaded")) {
                     lead.setStatus("completed");
                 }
                 pd = new ProgressBar(getActivity());
                 pd.startLoadingDialog();
-                if(InternetUtilityActivity.isNetworkConnected(getContext())) {
+                if (InternetUtilityActivity.isNetworkConnected(getContext())) {
                     Call<Lead> call = leadApi.updateLeadById(lead.getLeadId(), lead);
                     call.enqueue(new Callback<Lead>() {
                         @Override
@@ -208,10 +215,14 @@ public class HomeFragment extends Fragment {
                                         Toast.makeText(getContext(), "" + lead.getMaterialStatus() + " Update Successfully", Toast.LENGTH_SHORT).show();
                                     } else {
                                         leadList.remove(position);
+                                        if(leadList.size() == 0){
+                                            binding.noRecords.setVisibility(View.VISIBLE);
+                                            binding.rv.setVisibility(View.GONE);
+                                        }
                                         adapter.notifyDataSetChanged();
                                         Toast.makeText(getContext(), "" + lead.getMaterialStatus() + " Load Completed Successfully", Toast.LENGTH_SHORT).show();
                                     }
-                                    sendNotification(response.body().getMaterialStatus());
+                                    sendNotification(response.body(),user.getToken());
                                 } catch (Exception e) {
                                     Toast.makeText(getContext(), "" + e.toString(), Toast.LENGTH_SHORT).show();
                                 }
@@ -225,7 +236,7 @@ public class HomeFragment extends Fragment {
                         }
                     });
                     ab.dismiss();
-                }else{
+                } else {
                     getInternetAlert();
                 }
             }
@@ -235,18 +246,23 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void sendNotification(String status) {
+    private void sendNotification(Lead lead,String token) {
         try {
             RequestQueue queue = Volley.newRequestQueue(getContext());
             String url = "https://fcm.googleapis.com/fcm/send";
 
             JSONObject data = new JSONObject();
-            data.put("title", "Material Status");
-            data.put("body", "Material " + status);
+            data.put("title", lead.getPickUpAddress()+" To "+lead.getDeliveryAddress());
+            data.put("body", "Material Status : " + lead.getMaterialStatus());
+            data.put("resultCode","UpdateStatus");
+            data.put("transporterId",lead.getDealLockedWith());
+            data.put("leadId",lead.getLeadId());
+            data.put("status",lead.getMaterialStatus());
+            Toast.makeText(getContext(), ""+lead.getMaterialStatus(), Toast.LENGTH_SHORT).show();
 
             JSONObject notification_data = new JSONObject();
             notification_data.put("data", data);
-            notification_data.put("to", userToken);
+            notification_data.put("to", token);
 
 
             JsonObjectRequest request = new JsonObjectRequest(url, notification_data, new com.android.volley.Response.Listener<JSONObject>() {

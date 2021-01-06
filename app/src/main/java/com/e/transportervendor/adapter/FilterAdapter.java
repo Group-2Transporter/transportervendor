@@ -28,6 +28,16 @@ public class FilterAdapter extends ArrayAdapter {
         this.context = context;
         stateList = new ArrayList<>();
     }
+    public void update(ArrayList<States> result){
+        list = new ArrayList<>();
+        list.addAll(result);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getCount() {
+        return list.size();
+    }
 
     @NonNull
     @Override
@@ -66,6 +76,5 @@ public class FilterAdapter extends ArrayAdapter {
     public ArrayList<States> getSelectedState(){
         return stateList;
     }
-
 
 }

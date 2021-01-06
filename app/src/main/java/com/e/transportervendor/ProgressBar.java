@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 
+import com.github.ybq.android.spinkit.style.DoubleBounce;
+
 public class ProgressBar {
    private AlertDialog dialog;
    private Activity activity;

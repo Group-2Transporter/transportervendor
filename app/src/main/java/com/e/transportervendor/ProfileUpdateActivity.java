@@ -1,5 +1,6 @@
 package com.e.transportervendor;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 
 import com.e.transportervendor.api.BidService;
 import com.e.transportervendor.api.LeadService;
@@ -62,7 +65,9 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         transportApi = TransporterServices.getTransporterApiIntance();
         profileBinding = CreateProfileUpdateActivityBinding.inflate(LayoutInflater.from(this));
         setContentView(profileBinding.getRoot());
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 111);
+        }
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         sp = getSharedPreferences("transporter",MODE_PRIVATE);
         profileBinding.etUserName.setText(sp.getString("name",""));
@@ -231,6 +236,8 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length()!=0)
                     profileBinding.tvUserName.setText(s);
+                else
+                    profileBinding.tvUserName.setText("");
             }
             @Override
             public void afterTextChanged(Editable s) {
@@ -248,6 +255,8 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length()!=0)
                     profileBinding.tvStreetAddress.setText(s);
+                else
+                    profileBinding.tvStreetAddress.setText("");
             }
 
             @Override
@@ -267,6 +276,8 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length()!=0)
                     profileBinding.tvCityAddress.setText(s);
+                else
+                    profileBinding.tvCityAddress.setText("");
             }
 
             @Override
@@ -285,6 +296,8 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length()!=0)
                     profileBinding.tvStateAddress.setText(s);
+                else
+                    profileBinding.tvStateAddress.setText("");
             }
 
             @Override
@@ -321,7 +334,6 @@ public class ProfileUpdateActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Transporter> call, Response<Transporter> response) {
                     try {
-                        Toast.makeText(ProfileUpdateActivity.this, ""+response.code(), Toast.LENGTH_SHORT).show();
                         if (response.code() == 200) {
                             transporter = response.body();
                         }

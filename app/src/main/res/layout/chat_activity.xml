@@ -21,8 +21,8 @@
             android:orientation="horizontal">
             <ImageView
                 android:layout_gravity="center"
-                android:layout_width="50dp"
-                android:layout_height="40dp"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
                 android:src="@drawable/back"
                 android:id="@+id/ivBack"
                 />
@@ -30,17 +30,18 @@
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/user"
-                android:layout_margin="2dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginLeft="-14dp"
                 android:id="@+id/civUser"/>
             <TextView
-                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="start|center"
                 android:text="UserName"
                 android:id="@+id/tvName"
                 android:textColor="@color/white"
-                android:textSize="18sp"/>
+                android:textSize="20sp"/>
 
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
@@ -70,6 +71,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.75"
             android:id="@+id/etMessage"
+            android:hint="Message..."
             android:layout_marginLeft="20dp"
             android:layout_marginBottom="5dp"
             />

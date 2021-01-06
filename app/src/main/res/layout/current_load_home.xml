@@ -52,6 +52,7 @@
 
                     <ImageView
                         android:layout_width="30dp"
+                        android:layout_marginLeft="-5dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="-3dp"
                         android:src="@drawable/location_blue" />
@@ -61,6 +62,7 @@
                         style="@style/confirm_load_textView"
                         android:layout_width="wrap_content"
                         android:layout_gravity="center"
+                        android:paddingLeft="2dp"
                         android:layout_marginBottom="-3dp"
                         android:singleLine="true"
                         android:text="Source to Destination Add : "
@@ -90,7 +92,7 @@
                         <TextView
                             style="@style/confirm_load_textView"
                             android:layout_width="wrap_content"
-                            android:layout_marginLeft="8dp"
+                            android:layout_marginLeft="7dp"
                             android:layout_marginTop="3dp"
                             android:text="Client : "
 
@@ -219,9 +221,10 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="3dp"
+                android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Active Deal" />
+                android:text="Active" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

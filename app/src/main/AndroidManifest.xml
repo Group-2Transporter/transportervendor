@@ -17,29 +17,29 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".HistoryActivity" android:parentActivityName=".ProfileUpdateActivity"></activity>
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".SplashActivity">
+        <activity android:name=".HistoryActivity" android:parentActivityName=".ProfileUpdateActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".MainActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".SplashActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
+        <activity android:screenOrientation="portrait"
             android:name=".ProfileUpdateActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".ChatActivity" />
+        <activity android:name=".LoginActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ChatActivity" android:screenOrientation="portrait" />
         <activity
-            android:name=".AddVehicleActivity"
+            android:name=".AddVehicleActivity" android:screenOrientation="portrait"
             android:parentActivityName=".ManageVehicleActivity" />
         <activity
-            android:name=".ManageVehicleActivity"
+            android:name=".ManageVehicleActivity" android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ProfileActivity" android:screenOrientation="portrait"/>
 
-        <service android:name=".ReceivingPushNotification">
+        <service android:name=".ReceivingPushNotification" >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

@@ -40,7 +40,6 @@ public class ProfileActivity extends AppCompatActivity {
     String category = "";
     String currentUserId;
     Uri imageUri;
-    Transporter transporter;
     TransporterServices.TransportApi transportApi;
     boolean gstVisibility = false;
     SharedPreferences sp = null;
@@ -145,14 +144,13 @@ public class ProfileActivity extends AppCompatActivity {
                                     transporterToken,
                                     transporterRating);
                             if(InternetUtilityActivity.isNetworkConnected(ProfileActivity.this)) {
-                            final ProgressDialog pd = new ProgressDialog(ProfileActivity.this);
-                            pd.setMessage("please wait while creating profile..");
-                            pd.show();
+                            final ProgressBar pd = new ProgressBar(ProfileActivity.this);
+                            pd.startLoadingDialog();
                             call.enqueue(new Callback<Transporter>() {
                                 @Override
                                 public void onResponse(Call<Transporter> call, Response<Transporter> response) {
                                     Toast.makeText(ProfileActivity.this, "" + response.code(), Toast.LENGTH_SHORT).show();
-                                    pd.dismiss();
+                                    pd.dismissDialog();
                                     int status = response.code();
                                     if (status == 200) {
                                         Transporter t = response.body();
@@ -172,7 +170,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 @Override
                                 public void onFailure(Call<Transporter> call, Throwable t) {
                                     Toast.makeText(ProfileActivity.this, "Something went wrong : " + t, Toast.LENGTH_SHORT).show();
-                                    pd.dismiss();
+                                    pd.dismissDialog();
                                 }
                             });
                             }else{
