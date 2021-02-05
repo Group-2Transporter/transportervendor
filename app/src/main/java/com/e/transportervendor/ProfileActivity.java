@@ -242,6 +242,7 @@ public class ProfileActivity extends AppCompatActivity {
         editor.putString("gst", gstNo);
         editor.putString("image", t.getImageUrl());
         editor.putString("transporterId", t.getTransporterId());
+        editor.putString("rating",t.getRating());
         editor.commit();
     }
 }

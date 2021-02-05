@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 
 import com.e.transportervendor.adapter.CompletedLeadsShowAdapter;
@@ -41,10 +42,15 @@ public class HistoryActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     try {
                         ArrayList<Lead> leadList = response.body();
-                        if (leadList != null) {
+                        if (leadList.size() !=0) {
+                            binding.noRecords.setVisibility(View.GONE);
+                            binding.rv.setVisibility(View.VISIBLE);
                             CompletedLeadsShowAdapter adapter = new CompletedLeadsShowAdapter(leadList);
                             binding.rv.setAdapter(adapter);
                             binding.rv.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
+                        }else{
+                            binding.rv.setVisibility(View.GONE);
+                            binding.noRecords.setVisibility(View.VISIBLE);
                         }
                     }catch (Exception e){
                         Toast.makeText(HistoryActivity.this, ""+e.toString(), Toast.LENGTH_SHORT).show();

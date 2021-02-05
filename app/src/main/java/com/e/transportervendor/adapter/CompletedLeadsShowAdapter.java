@@ -3,6 +3,12 @@ package com.e.transportervendor.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,11 +21,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.e.transportervendor.R;
 import com.e.transportervendor.api.LeadService;
 import com.e.transportervendor.bean.Bid;
 import com.e.transportervendor.bean.Lead;
 import com.e.transportervendor.databinding.HistoryCompletedBinding;
 import com.e.transportervendor.utility.InternetUtilityActivity;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
+import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
+import com.google.firebase.ml.naturallanguage.languageid.FirebaseLanguageIdentification;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions;
 
 import java.util.ArrayList;
 
@@ -31,6 +45,7 @@ public class CompletedLeadsShowAdapter extends RecyclerView.Adapter<CompletedLea
     ArrayList<Lead> leadList;
     LeadService.LeadApi leadApi;
     Context context;
+    SharedPreferences language = null;
     public CompletedLeadsShowAdapter(ArrayList<Lead> leadList){
         this.leadList = leadList;
         leadApi = LeadService.getTransporterApiIntance();
@@ -40,22 +55,41 @@ public class CompletedLeadsShowAdapter extends RecyclerView.Adapter<CompletedLea
     @Override
     public CompletedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         HistoryCompletedBinding binding = HistoryCompletedBinding.inflate(LayoutInflater.from(parent.getContext()));
+        language = parent.getContext().getSharedPreferences("Language", Context.MODE_PRIVATE);
         context = parent.getContext();
         return new CompletedViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final CompletedViewHolder holder, final int position) {
+        String lang = language.getString("language","en");
+        final Lead lead;
+        if(lang.equalsIgnoreCase("en")) {
+            lead = leadList.get(position);
+        }
+        else {
+            lead = identifyLanguage(holder,leadList.get(position));
+        }
         try {
-            final Lead lead = leadList.get(position);
-            String[] pickup = lead.getPickUpAddress().split(",");
-            String[] delivery = lead.getDeliveryAddress().split(",");
-            holder.binding.tvAddress.setText(pickup[2] + " To " + delivery[2]);
+            holder.binding.tvPickupAddress.setText(lead.getPickUpAddress());
+            holder.binding.tvDeliveryAddress.setText(lead.getDeliveryAddress());
             holder.binding.tvAmount.setText("" + lead.getAmount());
             holder.binding.tvDate.setText(lead.getDateOfCompletion());
             holder.binding.tvTypeOfMaterial.setText(lead.getTypeOfMaterial());
             holder.binding.tvUserName.setText(lead.getUserName());
             holder.binding.tvWeight.setText(lead.getWeight());
+            if(!lead.getSecondaryMaterial().equalsIgnoreCase("")){
+                holder.binding.tvSpecialRequirment.setVisibility(View.VISIBLE);
+                holder.binding.rlSpecialMaterial.setVisibility(View.VISIBLE);
+                holder.binding.specialDeliveryAddress.setText(lead.getSecondaryDeliveryAddress());
+                holder.binding.specialMaterial.setText(lead.getSecondaryMaterial());
+                holder.binding.specialPickupAddress.setText(lead.getSecondaryPickupAddress());
+//                holder.binding.specialWeight.setText(lead.getSecondaryWeight());
+
+            }else{
+                holder.binding.tvSpecialRequirment.setVisibility(View.GONE);
+                holder.binding.rlSpecialMaterial.setVisibility(View.GONE);
+            }
             holder.binding.card .setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -151,5 +185,94 @@ public class CompletedLeadsShowAdapter extends RecyclerView.Adapter<CompletedLea
             }
         });
     }
+
+
+    private Lead identifyLanguage(CompletedViewHolder holder, final Lead lead) {
+
+        FirebaseLanguageIdentification identifier = FirebaseNaturalLanguage.getInstance()
+                .getLanguageIdentification();
+
+        identifier.identifyLanguage(lead.getPickUpAddress()).addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                lead.setLang(s);
+            }
+        });
+        return  getLanguageCode(holder,lead);
+    }
+
+    private Lead getLanguageCode(CompletedViewHolder holder, Lead lead) {
+        int langCode = FirebaseTranslateLanguage.EN;
+        return  translateText(holder,langCode,lead);
+    }
+
+    private Lead translateText(final CompletedViewHolder holder, int langCode, final Lead lead) {
+        FirebaseTranslatorOptions options = new FirebaseTranslatorOptions.Builder()
+                //from language
+                .setSourceLanguage(langCode)
+                // to language
+                .setTargetLanguage(FirebaseTranslateLanguage.HI)
+                .build();
+
+        final FirebaseTranslator translator = FirebaseNaturalLanguage.getInstance()
+                .getTranslator(options);
+
+        FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder()
+                .build();
+
+
+
+        translator.downloadModelIfNeeded(conditions).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                translator.translate(lead.getPickUpAddress()).addOnSuccessListener(new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        holder.binding.tvPickupAddress.setText(s);
+                    }
+                });
+                translator.translate(lead.getDeliveryAddress()).addOnSuccessListener(new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        holder.binding.tvDeliveryAddress.setText(s);
+                    }
+                });
+                translator.translate(lead.getTypeOfMaterial()).addOnSuccessListener(new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        holder.binding.tvTypeOfMaterial.setText(s);
+                    }
+                });
+                translator.translate(lead.getUserName()).addOnSuccessListener(new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        holder.binding.tvUserName.setText(s);
+                    }
+                });
+                translator.translate(lead.getSecondaryPickupAddress()).addOnSuccessListener(new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        holder.binding.specialPickupAddress.setText(s);
+                    }
+                });
+                translator.translate(lead.getSecondaryDeliveryAddress()).addOnSuccessListener(new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        holder.binding.specialDeliveryAddress.setText(s);
+                    }
+                });
+                translator.translate(lead.getSecondaryMaterial()).addOnSuccessListener(new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        holder.binding.specialMaterial.setText(s);
+                    }
+                });
+            }
+        });
+
+        return lead;
+    }
+
+
 
 }

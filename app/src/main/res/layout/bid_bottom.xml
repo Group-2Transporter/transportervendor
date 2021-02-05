@@ -1,144 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:padding="5dp">
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:scrollbarSize="5dp"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <LinearLayout
-        android:id="@+id/llDown"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/down"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
-            android:scaleType="fitXY"
-            android:src="@drawable/down" />
-
-    </LinearLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/llDown"
-        android:layout_margin="10dp"
-        app:cardCornerRadius="5dp">
+        android:background="@color/white"
+        android:padding="5dp">
 
         <LinearLayout
+            android:id="@+id/llDown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:orientation="vertical">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="22dp"
-                android:src="@drawable/location_blue" />
+                android:id="@+id/down"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:scaleType="fitXY"
+                android:src="@drawable/down" />
 
-            <TextView
-                android:id="@+id/tvLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:paddingLeft="10dp"
-                android:paddingTop="2dp"
-                android:text="Source address to destination address "
-                android:textAlignment="viewStart"
-                android:textSize="14sp"
-                android:textStyle="bold" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardMaterial"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cardLocation"
-        android:layout_margin="10dp"
-        app:cardCornerRadius="5dp">
-
-        <LinearLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_below="@id/llDown"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/material" />
-
-                <TextView
-                    android:id="@+id/tvTypeOfMaterial"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Material : Steel"
-                    android:textSize="14sp" />
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="18dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/weight" />
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/location_blue" />
 
-                <TextView
-                    android:id="@+id/tvWeight"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/tvPickupLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="2dp"
+                        android:text="Source address to destination address "
+                        android:textAlignment="viewStart"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Weight : 15 ton"
-                    android:textSize="14sp" />
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp">
 
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/red_icon" />
 
+                    <TextView
+                        android:id="@+id/tvDeliveryLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="2dp"
+                        android:text="Source address to destination address "
+                        android:textAlignment="viewStart"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardLocation"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/date" />
-
-                <TextView
-                    android:id="@+id/tvDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="11dp"
-                    android:text="Expiry Date : Steel"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginTop="12dp"
                     android:src="@drawable/client" />
 
 
@@ -146,193 +118,507 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="15dp"
-                    android:text="Send Responce to "
+                    android:layout_marginTop="3dp"
+                    android:text= "@string/client_name"
                     android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tvUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:text="  User"
+                    android:layout_marginTop="3dp"
+                    android:text="User"
                     android:textSize="14sp" />
             </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardRate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cardMaterial"
-        android:layout_margin="10dp"
-        app:cardCornerRadius="5dp">
-
-        <LinearLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardMaterial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
-
+            android:layout_below="@+id/cardUserName"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="10dp">
 
-                <RadioGroup
-                    android:id="@+id/checkedGroup"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <RadioButton
-                        android:checked="true"
-                        android:id="@+id/btnFixed"
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/material" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/remark_border"
-                        android:paddingLeft="5dp"
-                        android:paddingTop="4dp"
-                        android:buttonTint="@color/blue"
-                        android:textIsSelectable="true"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="4dp"
-                        android:text="Fixed"
-                        android:textSize="14sp" />
+                        android:orientation="horizontal">
 
-                    <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/remark_border"
-                        android:gravity="center"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:buttonTint="@color/blue"
-                        android:paddingLeft="5dp"
-                        android:paddingTop="4dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="4dp"
-                        android:text="Per Ton"
-                        android:id="@+id/btnPerTon"
-                        android:textSize="14sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/material" />
 
-                    <RadioButton
-                        android:id="@+id/btnKm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/remark_border"
-                        android:paddingLeft="5dp"
-                        android:paddingTop="4dp"
-                        android:buttonTint="@color/blue"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="4dp"
-                        android:text="Per Km"
-                        android:textSize="14sp" />
-                </RadioGroup>
+                        <TextView
+                            android:id="@+id/tvTypeOfMaterial"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Steel"
+                            android:textSize="14sp" />
+                    </LinearLayout>
 
-            </LinearLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/black"
-                android:id="@+id/tvLayout"
-                android:hint="Enter Fixed Price"
-                android:layout_marginTop="5dp"
-                app:placeholderText="INR 2000"
-                app:placeholderTextColor="#9E9494">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etRate"
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:includeFontPadding="false"
-                    android:inputType="number"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="18dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/weight" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/weight" />
+
+                        <TextView
+                            android:id="@+id/tvWeight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="15 ton"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/date" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="11dp"
+                            android:text="@string/estimated_date" />
+
+                        <TextView
+                            android:id="@+id/tvDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="11dp"
+                            android:text="10/12/2021"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <!--    change start new -->
+        <!--new -->
+        <TextView
+            android:id="@+id/tvSpecialRequirment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardMaterial"
+            android:layout_marginLeft="6dp"
+            android:visibility="visible"
+            android:layout_marginTop="10dp"
+            android:text="@string/special_requiermnt"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/cardMaterial2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@id/tvSpecialRequirment"
+            android:visibility="visible">
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                card_view:cardElevation="5dp"
+                android:elevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rc"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+                    <!--new Address-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/location_blue" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="2dp"
+                            android:text="@string/pickup_address"
+                            android:textAlignment="viewStart"
+                            android:textSize="14sp" />
+                        <TextView
+                            android:id="@+id/specialPickupAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="2dp"
+                            android:text="jalla colony khajrana "
+                            android:textAlignment="viewStart"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal"
+                        android:paddingRight="10dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/red_icon" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="2dp"
+                            android:text="@string/delivery_address"
+                            android:textAlignment="viewStart"
+                            android:textSize="14sp" />
+                        <TextView
+                            android:id="@+id/specialDeliveryAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="2dp"
+                            android:text="khajrana indore"
+                            android:textAlignment="viewStart"
+                            android:textSize="14sp"
+                            />
+                    </LinearLayout>
+
+                    <!-- finish-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/material" />
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="@string/material" />
+
+                            <TextView
+                                android:id="@+id/specialMaterial"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Steel"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="7dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/weight" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="@string/weight" />
+
+                            <TextView
+                                android:id="@+id/specialWeight"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="15 ton"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+
+
+
+
+
+
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardHandleWithCare"
+            android:layout_width="match_parent"
+            android:visibility="visible"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardMaterial2"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="5dp">
+            <TextView
+                android:drawableStart="@drawable/cheked_box"
+                android:padding="10dp"
+                android:id="@+id/tvHandleWithCare"
+                android:gravity="center_vertical"
+                android:drawablePadding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/handle"/>
+
+        </androidx.cardview.widget.CardView>
+        <!--    change end here-->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardRate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardHandleWithCare"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="5dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#D6F4B3"
-                android:id="@+id/totalAmount"
-                android:visibility="gone"
-                android:orientation="horizontal">
-                <TextView
-                    android:padding="7dp"
-                    android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tvType"
-                    android:textSize="11dp"
-                    android:text="Freight Amount (Rate * Number of Tonnes)"/>
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:orientation="horizontal">
+
+                    <RadioGroup
+                        android:id="@+id/checkedGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/btnFixed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/remark_border"
+                            android:buttonTint="@color/blue"
+                            android:checked="true"
+                            android:paddingLeft="5dp"
+                            android:paddingTop="4dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="4dp"
+                            android:text="Fixed"
+                            android:textIsSelectable="true"
+                            android:textSize="14sp" />
+
+                        <RadioButton
+                            android:id="@+id/btnPerTon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/remark_border"
+                            android:buttonTint="@color/blue"
+                            android:gravity="center"
+                            android:paddingLeft="5dp"
+                            android:paddingTop="4dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="4dp"
+                            android:text="Per Ton"
+                            android:textSize="14sp" />
+
+                        <RadioButton
+                            android:id="@+id/btnKg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/remark_border"
+                            android:buttonTint="@color/blue"
+                            android:paddingLeft="5dp"
+                            android:paddingTop="4dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="4dp"
+                            android:text="Per Kg"
+                            android:textSize="14sp" />
+                    </RadioGroup>
+
+                </LinearLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tvLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:backgroundTint="@color/black"
+                    android:hint="@string/enter_rate"
+                    app:errorTextAppearance="@style/ErrorTextAppearance"
+                    app:placeholderText="INR 2000"
+                    app:placeholderTextColor="#9E9494">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etRate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:inputType="number"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:id="@+id/totalAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#D6F4B3"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
-                        android:layout_marginLeft="3dp"
+                        android:id="@+id/tvType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:textAlignment="viewEnd"
-                        android:textSize="13sp"
-                        android:text="₹  0"
-                        android:layout_marginRight="10dp"
-                        android:id="@+id/tvTotal"/>
+                        android:padding="7dp"
+                        android:text="@string/freight_total_ton"
+                        android:textSize="11dp" />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvTotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginLeft="3dp"
+                            android:layout_marginRight="10dp"
+                            android:text="₹  0"
+                            android:textAlignment="viewEnd"
+                            android:textSize="13sp" />
 
 
-                </RelativeLayout>
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Remark"
+                    android:textStyle="bold"
+                    app:placeholderText="@string/remark" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etRemark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/remark_border"
+                    android:gravity="start"
+                    android:hint="@string/enter_remark"
+                    android:includeFontPadding="false"
+                    android:lines="4"
+                    android:padding="10dp"
+                    android:textAlignment="textStart"
+                    android:textSize="14sp" />
+
+
             </LinearLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnBid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardRate"
+            android:layout_margin="14dp"
+            app:cardBackgroundColor="@color/blue"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="5dp">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Remark"
-                android:textStyle="bold"
-                app:placeholderText="Please enter your Remark here !" />
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etRemark"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/remark_border"
-                android:gravity="start"
-                android:hint="Enter Remark Here..!"
-                android:includeFontPadding="false"
-                android:lines="4"
+                android:gravity="center"
                 android:padding="10dp"
-                android:textAlignment="textStart"
-                android:textSize="14sp" />
+                android:text="Bid Now"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </androidx.cardview.widget.CardView>
 
 
-        </LinearLayout>
-
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/btnBid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cardRate"
-        android:layout_margin="14dp"
-        app:cardBackgroundColor="@color/blue"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="5dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="Bid Now"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-    </androidx.cardview.widget.CardView>
-
-
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

@@ -38,6 +38,7 @@
             android:name=".ManageVehicleActivity" android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".ProfileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ClientInfoActivity" android:screenOrientation="portrait"/>
 
         <service android:name=".ReceivingPushNotification" >
             <intent-filter>

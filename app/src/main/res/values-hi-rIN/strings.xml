@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TransporterVendor</string>
+
+    <string name="open">open</string>
+    <string name="close">close</string>
+
+    <string-array name="transporterType">
+        <item>Select category</item>
+        <item>Transporter company</item>
+        <item>Truck owner</item>
+        <item>Packer and movers</item>
+    </string-array>
+
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, an SMS may be sent.</string>
+
+
+    <string name="internal_storage">Internal storage</string>
+    <string name="empty_directory">Empty Directory</string>
+    <string name="storage_removed">Storage was removed or unmounted</string>
+    <string name="choose_file">Select a file</string>
+    <string name="error_selecting_file">Error selecting File</string>
+
+
+
+
+    <!-- translate languages -->
+    <string name="profile">प्रोफ़ाइल</string>
+    <string name="home">घर</string>
+    <string name="market">बाजार</string>
+    <string name="history">इतिहास</string>
+    <string name="terms_and_condition">नियम व शर्तें</string>
+    <string name="privacy_and_policy">गोपनीयता और नीति</string>
+    <string name="contact_us">संपर्क करें</string>
+    <string name="about_us">हमारे बारे में</string>
+    <string name="language">भाषा</string>
+    <string name="logout">लॉग आउट</string>
+    <string name="update_profile">प्रोफ़ाइल अपडेट करें</string>
+    <string name="delete">हाँ</string>
+
+
+    <string name="client_name">ग्राहक नाम  :  </string>
+    <string name="note">नोट: यह एक और पता है .</string>
+    <string name="second_pickup_address"><b>दूसरा पिकअप स्ट्रीट एड्रेस</b></string>
+    <string name="estimated_date">अनुमानित तिथि : </string>
+
+    <string name="material">सामग्री : </string>
+    <string name="weight">वजन : </string>
+    <string name="amount">राशि : </string>
+    <string name="special_requiermnt"><b>उपयोगकर्ता की विशेष आवश्यकता : </b></string>
+    <string name="pickup_address">पिकअप पता : </string>
+    <string name="delivery_address">वितरण पता : </string>
+    <string name="pickup_contact">पिकअप संपर्क : </string>
+    <string name="delivery_contact">वितरण संपर्क : </string>
+    <string name="handle">ध्यान से संभालें</string>
+    <string name="enter_rate">अपनी कीमत दर्ज करें</string>
+    <string name="enter_per_ton">प्रति टन दर दर्ज करें</string>
+    <string name="enter_per_kg">प्रति किलोग्राम दर दर्ज करें </string>
+    <string name="freight_total_ton">माल राशि (दर * टन की संख्या)</string>
+    <string name="freight_total_kg"> माल राशि (दर * किलाग्राम की संख्या)</string>
+    <string name="remark">कृपया अपनी टिप्पणी यहाँ दर्ज करें! </string>
+    <string name="enter_remark">यहाँ टिप्पणी दर्ज करें ..!</string>
+
+    <string name="material_type">सामग्री प्रकार</string>
+    <string name="status">स्थिति</string>
+    <string name="remark_see">टिप्पणी</string>
+    <string name="to"><b>से</b></string>
+    <string name="manage_vehicle">वाहन प्रबंधित करें</string>
+    <string name="completed">पूर्ण </string>
+    <string name="completed_loads">पूरा किया गया भार</string>
+    <string name="active">सक्रिय </string>
+    <string name="pending">लंबित </string>
+    <string name="load_details">लोड विवरण </string>
+
+
+    <!--    Error entry-->
+    <string name="enter_rate_error">please enter rate</string>
+    <string name="enter_remark_error">Please enter Remark</string>
+
+    <string name="bid_now">बोली लगाए</string>
+    <string name="cancel">नहीं </string>
+    <string name="save">सहेजें</string>
+    <string name="search">खोज</string>
+    <string name="permanent_message">आप स्थायी रूप से अपना डेटा खो देंगे </string>
+    <string name="confirmation">क्या आप सुनिश्चित हैं ? </string>
+    <string name="delete_load">लोड हटाएं</string>
+    <string name="cancel_bid">बोली रद्द करें</string>
+    <string name="cancel_button">रद्द करें</string>
+
+    <string name="update_status">अपडेट स्थिति</string>
+    <string name="loaded">लोड किया गया</string>
+    <string name="intransit">इनट्रांसिट </string>
+    <string name="reached">पहुंच गया</string>
+    <string name="unloaded">अनलोडेड </string>
+    <string name="routes">रूट्स का चयन करें </string>
+    <string name="search_states">खोज राज्य </string>
+</resources>

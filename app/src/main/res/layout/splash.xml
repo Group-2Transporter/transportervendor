@@ -4,15 +4,14 @@
     android:layout_height="match_parent"
     android:background="@color/blue"
     android:orientation="vertical"
-    android:gravity="center"
     >
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:layout_marginTop="150dp"
         android:src="@drawable/eagle"
-        android:id="@+id/civ_img"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="-50dp"
+        android:id="@+id/civ_img"
         />
     <TextView
         android:layout_width="wrap_content"
@@ -32,8 +31,8 @@
         android:textSize="20sp"
         android:textColor="#ffffff"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/tv_Name"
-        android:layout_marginTop="150dp"/>
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"/>
 
 
 

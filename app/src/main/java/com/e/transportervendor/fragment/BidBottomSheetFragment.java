@@ -21,6 +21,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.e.transportervendor.ProgressBar;
 import com.e.transportervendor.R;
 import com.e.transportervendor.adapter.MarketListShowAdapter;
 import com.e.transportervendor.api.BidService;
@@ -48,6 +49,7 @@ public class BidBottomSheetFragment extends BottomSheetDialogFragment {
     String transporterName;
     String rateType;
     ArrayList<Lead> leadList;
+    Double amount;
     MarketListShowAdapter adapter;
     int position ;
     String userToken;
@@ -87,36 +89,49 @@ public class BidBottomSheetFragment extends BottomSheetDialogFragment {
             this.getDialog().getWindow().setBackgroundDrawableResource(R.drawable.transparent);
 
             binding.tvUser.setText(lead.getUserName());
-            binding.tvLocation.setText(lead.getPickUpAddress()+" To "+lead.getDeliveryAddress());
-            binding.tvTypeOfMaterial.setText("Material : "+lead.getTypeOfMaterial());
-            binding.tvWeight.setText("Weight : "+lead.getWeight());
-            binding.tvDate.setText("Expiry Date : "+lead.getDateOfCompletion());
+            binding.tvPickupLocation.setText(lead.getPickUpAddress());
+            binding.tvDeliveryLocation.setText(lead.getDeliveryAddress());
+            binding.tvTypeOfMaterial.setText(lead.getTypeOfMaterial());
+            binding.tvWeight.setText(lead.getWeight()+" Ton");
+            binding.tvDate.setText(lead.getDateOfCompletion());
+            if(lead.isHandleWithCare()){
+                binding.cardHandleWithCare.setVisibility(View.VISIBLE);
+            }
+
+            if(!lead.getSecondaryMaterial().equalsIgnoreCase("")){
+                binding.cardMaterial2.setVisibility(View.VISIBLE);
+                binding.specialPickupAddress.setText(lead.getSecondaryPickupAddress());
+                binding.specialDeliveryAddress.setText(lead.getSecondaryDeliveryAddress());
+                binding.specialMaterial.setText(lead.getSecondaryMaterial());
+                String weight = lead.getWeight();
+                binding.specialWeight.setText(lead.getSecondaryWeight());
+            }
             binding.checkedGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     switch (checkedId){
                         case R.id.btnFixed :
                             rateType = "fixed";
-                            binding.tvLayout.setHint("Enter Fixed Price");
+                            binding.tvLayout.setHint(""+getActivity().getResources().getString(R.string.enter_rate));
                             binding.totalAmount.setVisibility(View.GONE);
                             break;
                         case R.id.btnPerTon:
                             rateType = "perTon";
-                            binding.tvLayout.setHint("Enter Per Ton Rate");
+                            binding.tvLayout.setHint(""+getActivity().getResources().getString(R.string.enter_per_ton));
                             binding.totalAmount.setVisibility(View.VISIBLE);
-                            binding.tvType.setText("Freight Amount (Rate * Number of Tonnes)");
+                            binding.tvType.setText(""+getActivity().getResources().getString(R.string.freight_total_ton));
                             break;
-                        case R.id.btnKm :
-                            rateType = "km";
-                            binding.tvLayout.setHint("Enter Per Km Rate");
+                        case R.id.btnKg :
+                            rateType = "kg";
+                            binding.tvLayout.setHint(""+getActivity().getResources().getString(R.string.enter_per_kg));
                             binding.totalAmount.setVisibility(View.VISIBLE);
-                            binding.tvType.setText("Freight Amount (Rate * Number of Km)");
+                            binding.tvType.setText(""+getActivity().getResources().getString(R.string.freight_total_kg));
                             break;
                     }
                 }
             });
             String w[] = lead.getWeight().split(" ");
-            final long mult = Integer.parseInt(w[0]);
+            final Double mult = Double.parseDouble(w[0]);
             binding.etRate.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -126,9 +141,9 @@ public class BidBottomSheetFragment extends BottomSheetDialogFragment {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if(s.length()!=0){
-                        long total = Integer.parseInt(s.toString());
-                        double amount = mult * total;
-                        binding.tvTotal.setText("₹  "+amount);
+                        Double total = Double.parseDouble(s.toString());
+                        amount = mult * total;
+                        binding.tvTotal.setText("₹ "+amount);
                     }else{
                         binding.tvTotal.setText("₹  0");
                     }
@@ -144,25 +159,29 @@ public class BidBottomSheetFragment extends BottomSheetDialogFragment {
             binding.btnBid.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    final ProgressBar pd = new ProgressBar(getActivity());
+                    pd.startLoadingDialog();
                     String rate = binding.etRate.getText().toString();
                     if (rate.isEmpty()) {
-                        binding.etRate.setError("please enter rate");
+                        binding.etRate.setError(""+getActivity().getResources().getString(R.string.enter_rate_error));
+                        pd.dismissDialog();
                         return;
                     }
-                    long amount = Long.parseLong(rate);
+                    amount = Double.parseDouble(rate);
 
                     String remark = binding.etRemark.getText().toString();
                     if (remark.isEmpty()) {
-                        binding.etRemark.setError("please enter Remark");
+                        binding.etRemark.setError(""+getActivity().getResources().getString(R.string.enter_remark_error));
+                        pd.dismissDialog();
                         return;
                     }
                     Bid bid = new Bid(currentUserId, lead.getLeadId(), transporterName, amount, remark, lead.getDateOfCompletion(), lead.getTypeOfMaterial());
-
                     Call<Bid> call = bidApi.createBid(bid);
                     call.enqueue(new Callback<Bid>() {
 
                         @Override
                         public void onResponse(Call<Bid> call, Response<Bid> response) {
+                            pd.dismissDialog();
                             if (response.code() == 200) {
                                 leadList.remove(position);
                                 adapter.notifyDataSetChanged();
@@ -176,6 +195,7 @@ public class BidBottomSheetFragment extends BottomSheetDialogFragment {
 
                         @Override
                         public void onFailure(Call<Bid> call, Throwable t) {
+                            pd.dismissDialog();
                             Toast.makeText(getContext(), "" + t, Toast.LENGTH_SHORT).show();
                             dismiss();
                         }

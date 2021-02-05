@@ -158,8 +158,7 @@ public class HistoryFragment extends Fragment {
                                     ab.setView(deleteBinding.getRoot());
                                     ab.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                                     ab.setCancelable(false);
-                                    deleteBinding.civIcon.setImageResource(R.drawable.cross);
-                                    deleteBinding.tvDeleteLead.setText("Cancel Bid");
+                                    deleteBinding.tvDeleteLead.setText(getContext().getResources().getString(R.string.cancel_bid));
                                     deleteBinding.btnConfirm.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
@@ -206,19 +205,6 @@ public class HistoryFragment extends Fragment {
                                         }
                                     });
                                     ab.show();
-//                                    ab.setMessage("Are you sure to Cancel bid ?");
-//                                    ab.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialog, int which) {
-//                                            if(InternetUtilityActivity.isNetworkConnected(getContext())) {
-
-//                                            }else{
-//                                                getInternetAlert();
-//                                            }
-//                                        }
-//                                    });
-//                                    ab.setNegativeButton("Cancel", null);
-//                                    ab.show();
                                 }
                             });
                         }else{

@@ -21,7 +21,7 @@ public class Bid implements Serializable
     private String transporterName;
     @SerializedName("amount")
     @Expose
-    private Long amount;
+    private Double amount;
     @SerializedName("remark")
     @Expose
     private String remark;
@@ -33,7 +33,7 @@ public class Bid implements Serializable
     private String materialType;
     private final static long serialVersionUID = 4348143418672905913L;
 
-    public Bid(String transporterId, String leadId, String transporterName, Long amount, String remark, String estimatedDate, String materialType) {
+    public Bid(String transporterId, String leadId, String transporterName, Double amount, String remark, String estimatedDate, String materialType) {
         this.transporterId = transporterId;
         this.leadId = leadId;
         this.transporterName = transporterName;
@@ -75,11 +75,11 @@ public class Bid implements Serializable
         this.transporterName = transporterName;
     }
 
-    public Long getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

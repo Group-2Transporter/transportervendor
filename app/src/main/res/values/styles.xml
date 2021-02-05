@@ -9,8 +9,10 @@
         <item name="android:statusBarColor">@color/blue</item>
         <item name="android:screenOrientation">portrait</item>
         <item name="windowActionModeOverlay">true</item>
+        <item name="colorControlActivated">@color/blue</item>
 
     </style>
+
 
 
 
@@ -21,7 +23,25 @@
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/blue</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/blue</item>
     </style>
+
+
+
+    <style name="FirebaseUI.Button.AccountChooser.PhoneButton">
+        <item name="drawableStartCompat">@drawable/fui_ic_phone_white_24dp</item>
+        <item name="android:background">@drawable/phone_auth_button</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+    </style>
+
+    <style name="FirebaseUI.VerifyPhoneButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/phone_auth_button</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+    </style>
+
+
 
     <style name="button">
         <item name="android:layout_width">match_parent</item>
@@ -62,5 +82,33 @@
         parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bid_border</item>
     </style>
+
+
+
+
+
+<!--    <style name="HintInputTextAppearance" parent="TextAppearance.AppCompat">-->
+<!--        <item name="android:textColor">@color/blue</item>-->
+<!--        <item name="android:textSize">22dp</item>-->
+<!--        <item name="colorAccent">@color/blue</item>-->
+<!--    </style>-->
+<!--    <style name="InputTextAppearance" parent="TextAppearance.AppCompat">-->
+<!--        <item name="android:textColor">#ff000000</item>-->
+<!--        <item name="android:textColorHint">#ff000000</item>-->
+<!--        <item name="android:textSize">24dp</item>-->
+<!--        <item name="colorAccent">#ff000000</item>-->
+<!--    </style>-->
+
+    <style name="ErrorTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">#ffff0000</item>
+        <item name="android:textColorHint">#ffff0000</item>
+        <item name="android:textSize">11sp</item>
+        <item name="colorAccent">#ffff0000</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:padding">0dp</item>
+
+
+    </style>
+
 
 </resources>

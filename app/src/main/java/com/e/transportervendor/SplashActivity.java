@@ -2,6 +2,7 @@ package com.e.transportervendor;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -14,14 +15,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.e.transportervendor.databinding.SplashBinding;
 import com.e.transportervendor.utility.InternetUtilityActivity;
+import com.e.transportervendor.utility.LocaleHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SplashActivity extends AppCompatActivity {
     FirebaseUser curretUser ;
+    SharedPreferences language = null;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        language = getSharedPreferences("Language",MODE_PRIVATE);
+        LocaleHelper.updateResources(this,language.getString("language","en"));
         try {
             curretUser = FirebaseAuth.getInstance().getCurrentUser();
             SplashBinding splash = SplashBinding.inflate(getLayoutInflater());
@@ -67,6 +72,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void navigateUserToMainActivity(){
         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+
         startActivity(intent);
         finish();
     }

@@ -1,16 +1,98 @@
 <resources>
     <string name="app_name">TransporterVendor</string>
+
     <string name="open">open</string>
     <string name="close">close</string>
+
     <string-array name="transporterType">
         <item>Select category</item>
         <item>Transporter company</item>
         <item>Truck owner</item>
         <item>Packer and movers</item>
     </string-array>
+
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, an SMS may be sent.</string>
+
+
     <string name="internal_storage">Internal storage</string>
     <string name="empty_directory">Empty Directory</string>
     <string name="storage_removed">Storage was removed or unmounted</string>
     <string name="choose_file">Select a file</string>
     <string name="error_selecting_file">Error selecting File</string>
+
+
+
+
+    <!-- translate languages -->
+    <string name="profile">Profile</string>
+    <string name="home">Home</string>
+    <string name="market">Market</string>
+    <string name="history">History</string>
+    <string name="terms_and_condition">Terms and Condition</string>
+    <string name="privacy_and_policy">Privacy and Policy</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="about_us">About Us</string>
+    <string name="language">Language</string>
+    <string name="logout">Logout</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="delete">Delete</string>
+
+
+    <string name="client_name">Client Name  :  </string>
+    <string name="note">Note : It is secondary address from same city.</string>
+    <string name="second_pickup_address"><b>Second Pickup Street Address</b></string>
+    <string name="estimated_date">Estimated Date : </string>
+    <string name="material">Material : </string>
+    <string name="weight">Weight : </string>
+    <string name="amount">Amount : </string>
+    <string name="special_requiermnt"><b>Special Requirement Of : </b></string>
+    <string name="pickup_address">Pickup Address : </string>
+    <string name="delivery_address">Delivery Address : </string>
+    <string name="pickup_contact">Pickup Contact : </string>
+    <string name="delivery_contact">Delivery Contact : </string>
+    <string name="handle">Handle with Care</string>
+    <string name="enter_rate">Enter your Rate</string>
+    <string name="enter_per_ton">Enter Per Ton Rate</string>
+    <string name="enter_per_kg">Enter Per Kg Rate</string>
+    <string name="freight_total_ton">Freight Amount (Rate * Per Tonnes)</string>
+    <string name="freight_total_kg">Freight Amount (Rate * Per KiloGram)</string>
+    <string name="remark">Please enter your Remark here !</string>
+    <string name="enter_remark">Enter Remark Here..!</string>
+
+    <string name="material_type">Material Type</string>
+    <string name="status">Status</string>
+    <string name="remark_see">Remark</string>
+    <string name="to"><b>To</b></string>
+    <string name="manage_vehicle">Manage Vehicle</string>
+    <string name="completed">Completed</string>
+    <string name="completed_loads">Completed Loads</string>
+    <string name="active">Active</string>
+    <string name="pending">Pending</string>
+    <string name="load_details">Load Details</string>
+
+
+
+
+<!--    Error entry-->
+    <string name="enter_rate_error">please enter rate</string>
+    <string name="enter_remark_error">Please enter Remark</string>
+
+
+    <string name="bid_now">Bid Now</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="search">Search</string>
+    <string name="permanent_message">You will permanently lose your data</string>
+    <string name="confirmation">Are You Sure ?</string>
+    <string name="delete_load">Delete Load</string>
+    <string name="cancel_bid">Cancel Bid</string>
+    <string name="cancel_button">Cancel</string>
+
+    <string name="update_status">UPDATE STATUS</string>
+    <string name="loaded">Loaded</string>
+    <string name="intransit">InTransit</string>
+    <string name="reached">Reached</string>
+    <string name="unloaded">Unloaded</string>
+    <string name="routes">Select Routes</string>
+    <string name="search_states">Search States</string>
 </resources>

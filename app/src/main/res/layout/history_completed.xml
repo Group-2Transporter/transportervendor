@@ -25,14 +25,15 @@
                 android:layout_height="40dp"
                 android:src="@drawable/check_circle"
                 android:id="@+id/kis"
+                android:layout_marginTop="70dp"
                 android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
                 android:layout_marginRight="18dp"/>
             <TextView
                 android:id="@+id/tvDate"
                 style="@style/confirm_load_textView"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold"
                 android:text="3/12/2020"
 
                 android:layout_marginRight="5dp"
@@ -49,16 +50,14 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginBottom="-3dp"
                     android:src="@drawable/location_blue" />
 
                 <TextView
                     android:layout_marginLeft="5dp"
-                    android:id="@+id/tvAddress"
+                    android:id="@+id/tvPickupAddress"
                     android:scrollIndicators="start"
                     style="@style/confirm_load_textView"
                     android:layout_width="wrap_content"
-                    android:layout_gravity="center"
                     android:singleLine="true"
                     android:layout_marginBottom="-3dp"
                     android:text="Source to Destination Add : "
@@ -66,16 +65,41 @@
 
             </LinearLayout>
             <LinearLayout
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:gravity="center_vertical"
+                android:id="@+id/dLocation"
+                android:layout_below="@id/llLocation"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/red_icon" />
+
+                <TextView
+                    android:id="@+id/tvDeliveryAddress"
+                    android:layout_marginLeft="5dp"
+                    android:scrollIndicators="start"
+                    style="@style/confirm_load_textView"
+                    android:layout_width="wrap_content"
+                    android:singleLine="true"
+                    android:text="Source to Destination Add : "
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
                 android:id="@+id/lll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/llLocation"
+                android:layout_below="@id/dLocation"
                 android:orientation="vertical">
 
                 <LinearLayout
 
                     android:padding="2dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="7dp"
                     android:id="@+id/llMaterialType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -90,7 +114,7 @@
                         android:layout_marginTop="3dp"
                         style="@style/confirm_load_textView"
                         android:layout_width="wrap_content"
-                        android:text="Client Name : "
+                        android:text="@string/client_name"
 
                         />
 
@@ -105,6 +129,7 @@
                 <LinearLayout
                     android:id="@+id/llName"
                     android:padding="2dp"
+                    android:layout_marginTop="7dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/llMaterialType">
@@ -120,7 +145,7 @@
                         android:layout_marginLeft="6dp"
                         style="@style/confirm_load_textView"
                         android:layout_width="wrap_content"
-                        android:text="Material : " />
+                        android:text="@string/material" />
 
                     <TextView
                         android:layout_marginTop="3dp"
@@ -135,6 +160,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
                     android:layout_below="@id/llName">
 
 
@@ -148,7 +174,7 @@
                         android:layout_width="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginTop="4dp"
-                        android:text="Weight : "
+                        android:text="@string/weight"
 
                         />
 
@@ -166,22 +192,25 @@
                     android:padding="2dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
                     android:layout_below="@id/llName">
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:src="@drawable/rupee"/>
 
                     <TextView
+                        android:layout_marginTop="2dp"
                         android:layout_marginLeft="6dp"
                         style="@style/confirm_load_textView"
                         android:layout_width="wrap_content"
-                        android:text="Amount : "
+                        android:text="@string/amount"
 
                         />
 
                     <TextView
                         android:id="@+id/tvAmount"
+                        android:layout_marginTop="2dp"
                         style="@style/confirm_load_textView"
                         android:layout_width="wrap_content"
                         android:text="12000" />
@@ -190,7 +219,182 @@
 
 
             </LinearLayout>
-            '
+<!--            changes started-->
+
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tvSpecialRequirment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lll"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/special_requiermnt"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/rlSpecialMaterial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lll"
+                android:layout_marginTop="20dp"
+                android:visibility="gone">
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6dp"
+                    android:elevation="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/rc"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+                        <!--new Address-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="22dp"
+                                android:src="@drawable/location_blue" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:paddingLeft="10dp"
+                                android:paddingTop="2dp"
+                                android:text="@string/pickup_address"
+                                android:textAlignment="viewStart"
+                                android:textSize="14sp"
+                                 />
+                            <TextView
+                                android:id="@+id/specialPickupAddress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:paddingLeft="10dp"
+                                android:paddingTop="2dp"
+                                android:text="jalla colony khajrana "
+                                android:textAlignment="viewStart"
+                                android:textSize="14sp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal"
+                            android:paddingRight="10dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="22dp"
+                                android:src="@drawable/red_icon" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:paddingLeft="10dp"
+                                android:paddingTop="2dp"
+                                android:text="@string/delivery_address"
+                                android:textAlignment="viewStart"
+                                android:textSize="14sp"
+                                 />
+                            <TextView
+                                android:id="@+id/specialDeliveryAddress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:paddingLeft="10dp"
+                                android:paddingTop="2dp"
+                                android:text="khajrana indore"
+                                android:textAlignment="viewStart"
+                                android:textSize="14sp"
+                                />
+                        </LinearLayout>
+
+                        <!-- finish-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="vertical">
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/material" />
+
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:text="@string/material" />
+
+                                <TextView
+                                    android:id="@+id/specialMaterial"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Steel"
+                                    android:textSize="14sp"/>
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginTop="7dp">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="18dp"
+                                    android:src="@drawable/weight" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:text="Weight : " />
+
+                                <TextView
+                                    android:id="@+id/specialWeight"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="15 ton"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="vertical">
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+<!--            changes finish-->
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

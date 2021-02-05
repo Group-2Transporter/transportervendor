@@ -3,19 +3,19 @@
     <item android:title="Welcome">
         <menu>
             <item android:id="@+id/profile"
-                android:title="Profile"
+                android:title="@string/profile"
                 android:iconTintMode="screen"
                 android:icon="@drawable/profile"/>
             <item android:id="@+id/nav_home"
-                android:title="Home"
+                android:title="@string/home"
                 android:icon="@drawable/home_icon"
                 />
             <item android:id="@+id/nav_market"
-                android:title="Market"
+                android:title="@string/market"
                 android:icon="@drawable/truck"
                 />
             <item android:id="@+id/nav_history"
-                android:title="History"
+                android:title="@string/history"
                 android:icon="@drawable/history_icon"
                 />
         </menu>
@@ -24,21 +24,25 @@
     <item android:title="App Information">
         <menu>
             <item android:id="@+id/terms"
-                android:title="Terms and Condition"
+                android:title="@string/terms_and_condition"
                 android:icon="@drawable/terms"/>
             <item android:id="@+id/privacy"
-                android:title="Privacy and Policy"
+                android:title="@string/privacy_and_policy"
                 android:icon="@drawable/lock"/>
             <item android:id="@+id/contact"
-                android:title="Contact Us"
+                android:title="@string/contact_us"
                 android:icon="@drawable/call"/>
+            <item android:id="@+id/language"
+                android:title="@string/language"
+                android:icon="@drawable/language"/>
+
             <item android:id="@+id/about"
-                android:title="About Us"
+                android:title="@string/about_us"
                 android:icon="@drawable/eagleshipperlogo"/>
         </menu>
     </item>
     <item android:id="@+id/logout"
-        android:title="Log Out"
+        android:title="@string/logout"
         android:icon="@drawable/logout"/>
 
 </menu>

@@ -7,6 +7,16 @@ import com.google.gson.annotations.SerializedName;
 public class Lead implements Serializable
 {
 
+    private String lang;
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
     @SerializedName("userId")
     @Expose
     private String userId;
@@ -57,10 +67,74 @@ public class Lead implements Serializable
     private String userName;
     @SerializedName("amount")
     @Expose
-    private Integer amount;
+    private Double amount;
     @SerializedName("remark")
     @Expose
     private String remark;
+
+    private String secondaryMaterial;
+    private String secondaryWeight;
+    private String secondaryPickupContact;
+    private String secondaryDeliveryContact;
+    private String secondaryPickupAddress;
+    private String secondaryDeliveryAddress;
+    private boolean handleWithCare;
+
+    public String getSecondaryWeight() {
+        return secondaryWeight;
+    }
+
+    public void setSecondaryWeight(String secondaryWeight) {
+        this.secondaryWeight = secondaryWeight;
+    }
+
+    public String getSecondaryMaterial() {
+        return secondaryMaterial;
+    }
+
+    public void setSecondaryMaterial(String secondaryMaterial) {
+        this.secondaryMaterial = secondaryMaterial;
+    }
+
+    public String getSecondaryPickupContact() {
+        return secondaryPickupContact;
+    }
+
+    public void setSecondaryPickupContact(String secondaryPickupContact) {
+        this.secondaryPickupContact = secondaryPickupContact;
+    }
+
+    public String getSecondaryDeliveryContact() {
+        return secondaryDeliveryContact;
+    }
+
+    public void setSecondaryDeliveryContact(String secondaryDeliveryContact) {
+        this.secondaryDeliveryContact = secondaryDeliveryContact;
+    }
+
+    public String getSecondaryPickupAddress() {
+        return secondaryPickupAddress;
+    }
+
+    public void setSecondaryPickupAddress(String secondaryPickupAddress) {
+        this.secondaryPickupAddress = secondaryPickupAddress;
+    }
+
+    public String getSecondaryDeliveryAddress() {
+        return secondaryDeliveryAddress;
+    }
+
+    public void setSecondaryDeliveryAddress(String secondaryDeliveryAddress) {
+        this.secondaryDeliveryAddress = secondaryDeliveryAddress;
+    }
+
+    public boolean isHandleWithCare() {
+        return handleWithCare;
+    }
+
+    public void setHandleWithCare(boolean handleWithCare) {
+        this.handleWithCare = handleWithCare;
+    }
 
     public String getUserId() {
         return userId;
@@ -190,11 +264,11 @@ public class Lead implements Serializable
         this.userName = userName;
     }
 
-    public Integer getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

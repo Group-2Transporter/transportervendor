@@ -4,7 +4,9 @@ import com.e.transportervendor.bean.Lead;
 import com.e.transportervendor.bean.States;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -18,9 +20,13 @@ public class LeadService {
     public static LeadService.LeadApi leadApi;
 
     public static LeadService.LeadApi getTransporterApiIntance() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(100, TimeUnit.SECONDS)
+                .readTimeout(100,TimeUnit.SECONDS).build();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ServerAddress.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
                 .build();
         if (leadApi == null)
             leadApi = retrofit.create(LeadService.LeadApi.class);

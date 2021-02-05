@@ -1,9 +1,13 @@
 package com.e.transportervendor;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,7 +51,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+
+import javax.xml.transform.Result;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,6 +64,7 @@ public class ChatActivity extends AppCompatActivity {
     ChatActivityBinding binding;
     String userId;
     String currentUserId;
+    SharedPreferences sp = null,language = null;
     DatabaseReference firebaseDatabase;
     MessageAdapter adapter;
     String leadId;
@@ -68,14 +76,25 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = getSharedPreferences("transporter", MODE_PRIVATE);
+        language = getSharedPreferences("Language", MODE_PRIVATE);
+        final String lang = language.getString("language","en");
         binding = ChatActivityBinding.inflate(LayoutInflater.from(this));
         setContentView(binding.getRoot());
         try {
             setSupportActionBar(binding.toolbar);
-            Intent in = getIntent();
+            final Intent in = getIntent();
             currentUserId = FirebaseAuth.getInstance().getUid();
             userId = (String) in.getCharSequenceExtra("userId");
             leadId = (String) in.getCharSequenceExtra("leadId");
+            binding.toolbar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ChatActivity.this, ClientInfoActivity.class);
+                    intent.putExtra("leadId",leadId);
+                    startActivity(intent);
+                }
+            });
             UserService.UserApi userApi = UserService.getUserApiInstance();
             TransporterServices.TransportApi transportApi = TransporterServices.getTransporterApiIntance();
             transportApi.getTransporterVehicleList(currentUserId).enqueue(new Callback<Transporter>() {
@@ -89,6 +108,27 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<Transporter> call, Throwable t) {
                     Toast.makeText(ChatActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            binding.tvVoice.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    if(lang.equalsIgnoreCase("hi")) {
+                        intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, false);
+                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "hi-IN");
+                    }
+                    else{
+                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                    }
+                    intent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Hi speak something");
+                    try {
+                        startActivityForResult(intent, 1);
+                    }catch (ActivityNotFoundException e){
+                        Log.e("Chat Voice","====>"+e.getMessage());
+                    }
                 }
             });
             binding.etMessage.addTextChangedListener(new TextWatcher() {
@@ -105,7 +145,16 @@ public class ChatActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    if(s.toString().isEmpty()){
+                        binding.tvVoice.setVisibility(View.VISIBLE);
+                        binding.tvSend.setVisibility(View.GONE);
 
+                    }else{
+                        binding.tvVoice.setVisibility(View.GONE);
+                        binding.tvSend.setVisibility(View.VISIBLE);
+
+
+                    }
                 }
             });
             if(InternetUtilityActivity.isNetworkConnected(this)) {
@@ -183,9 +232,7 @@ public class ChatActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
-                                    //Toast.makeText(ChatActivity.this, "Message Delete", Toast.LENGTH_SHORT).show();
                                     if(msg.getFrom().equalsIgnoreCase(currentUserId)){
-                                        Toast.makeText(ChatActivity.this, "1 dkn", Toast.LENGTH_SHORT).show();
                                         firebaseDatabase.child("Messages").child(leadId).child(userId).child(currentUserId).child(msg.getMessageId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
@@ -307,6 +354,19 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 1 :
+                if(resultCode == RESULT_OK && data !=null){
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    binding.etMessage.setText(result.get(0));
+                }
+                break;
+        }
     }
 
     private void sendNotification(final Message message){

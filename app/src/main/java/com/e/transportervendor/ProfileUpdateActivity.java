@@ -2,8 +2,10 @@ package com.e.transportervendor;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -29,12 +31,20 @@ import com.e.transportervendor.api.LeadService;
 import com.e.transportervendor.api.TransporterServices;
 import com.e.transportervendor.bean.Bid;
 import com.e.transportervendor.bean.Lead;
+import com.e.transportervendor.bean.States;
 import com.e.transportervendor.bean.Transporter;
 import com.e.transportervendor.databinding.CreateProfileUpdateActivityBinding;
+import com.e.transportervendor.databinding.FilterListBinding;
 import com.e.transportervendor.utility.FileUtils;
 import com.e.transportervendor.utility.InternetUtilityActivity;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
+import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator;
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -49,7 +59,7 @@ import retrofit2.Response;
 
 public class ProfileUpdateActivity extends AppCompatActivity {
     CreateProfileUpdateActivityBinding profileBinding;
-    SharedPreferences sp;
+    SharedPreferences sp,language;
     String imageUrl;
     Uri imageUri;
     String[] separated;
@@ -64,6 +74,7 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         transportApi = TransporterServices.getTransporterApiIntance();
         profileBinding = CreateProfileUpdateActivityBinding.inflate(LayoutInflater.from(this));
+        language = getSharedPreferences("Language", Context.MODE_PRIVATE);
         setContentView(profileBinding.getRoot());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 111);
@@ -71,9 +82,9 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         sp = getSharedPreferences("transporter",MODE_PRIVATE);
         profileBinding.etUserName.setText(sp.getString("name",""));
-        String gs = sp.getString("gst","not_found");
+        final String gs = sp.getString("gst","not_found");
         if(!gs.equalsIgnoreCase("not_found"))
-        profileBinding.etGstNum.setText(gs);
+            profileBinding.etGstNum.setText(gs);
         String currentString = sp.getString("address","");
         separated = currentString.split(",");
         profileBinding.etStreetAdrees.setText(separated[0]);
@@ -82,6 +93,16 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         profileBinding.etPhoneNumber.setText(sp.getString("contactNumber",""));
         imageUrl=sp.getString("image","");
         Picasso.get().load(imageUrl).into(profileBinding.civProfile);
+        String rating = sp.getString("rating","No");
+        if(rating.equalsIgnoreCase(""))
+            profileBinding.rating.setVisibility(View.GONE);
+        else {
+            profileBinding.rating.setVisibility(View.VISIBLE);
+            profileBinding.rating.setRating(Float.parseFloat(rating));
+        }
+
+        String lang = language.getString("language","en");
+
         getTransporterThroughApi();
         setLoadsDetails();
         String compareValue = sp.getString("type","not_found");
@@ -112,10 +133,13 @@ public class ProfileUpdateActivity extends AppCompatActivity {
                 Toast.makeText(ProfileUpdateActivity.this, category, Toast.LENGTH_SHORT).show();
                 if (category.equalsIgnoreCase("Transporter company")) {
                     profileBinding.etGstNum.setVisibility(View.VISIBLE);
+                    profileBinding.tlGstNumber.setVisibility(View.VISIBLE);
                     gstVisibility = true;
-                } else
+                } else {
                     profileBinding.etGstNum.setVisibility(View.GONE);
+                    profileBinding.tlGstNumber.setVisibility(View.GONE);
                     gstVisibility = false;
+                }
             }
 
             @Override
@@ -134,33 +158,16 @@ public class ProfileUpdateActivity extends AppCompatActivity {
                     }
 
                     String name = profileBinding.etUserName.getText().toString();
-                    if (name.isEmpty()) {
-                        profileBinding.etUserName.setError("Enter Name");
-                        return;
-                    }
                     String contact = profileBinding.etPhoneNumber.getText().toString();
-                    if (contact.length() < 10) {
-                        profileBinding.etPhoneNumber.setError("Minimum 10 digits required");
-                        return;
-                    }
                     String streetAddress = profileBinding.etStreetAdrees.getText().toString();
-                    if (streetAddress.isEmpty()) {
-                        profileBinding.etStreetAdrees.setError("Require data");
-                        return;
-                    }
                     String cityAddress = profileBinding.etCityAddress.getText().toString();
-                    if (cityAddress.isEmpty()) {
-                        profileBinding.etCityAddress.setError("Require data");
-                        return;
-                    }
                     String stateAddress = profileBinding.etStateAdress.getText().toString();
-                    if (stateAddress.isEmpty()) {
-                        profileBinding.etStateAdress.setError("Require data");
+                    if(!validatePhoneNumber(contact) | !validateStreetAddress(streetAddress) | !validateCityAddress(cityAddress) | !validateStateAddress(stateAddress) | !validateUserName(name)) {
                         return;
                     }
+
                     String gstNumber = profileBinding.etGstNum.getText().toString();
-                    if (gstVisibility && gstNumber.length() < 14) {
-                        profileBinding.etGstNum.setError("Minimum 14 characters required");
+                    if (gstVisibility && !validateGst(gstNumber)) {
                         return;
                     }
                     String token = FirebaseInstanceId.getInstance().getToken();
@@ -225,6 +232,85 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private boolean validateStateAddress(String stateAddress) {
+        if (stateAddress.isEmpty()) {
+            profileBinding.tlStateAddress.setError("");
+            profileBinding.tvStateAddress.setError("please enter your state name");
+            return false;
+        }
+        else{
+            profileBinding.tlStateAddress.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validateGst(String gst) {
+        if(gst.isEmpty()){
+            profileBinding.tlGstNumber.setError("please enter gst number");
+            return false;
+        }else if (gst.length() < 10) {
+            profileBinding.tlGstNumber.setError("gst number less than 14 not valid");
+            return false;
+        }else{
+            profileBinding.tlGstNumber.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validatePhoneNumber(String contact) {
+        if(contact.isEmpty()){
+            profileBinding.tlPhoneNumber.setError("please enter contact number");
+            return false;
+        }else if (contact.length() < 10) {
+            profileBinding.tlPhoneNumber.setError("number less than 10 not valid");
+            return false;
+        }else{
+            profileBinding.tlPhoneNumber.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validateCityAddress(String cityAddress) {
+        if (cityAddress.isEmpty()) {
+            profileBinding.tlCityAddress.setError("please enter city name");
+            return false;
+        }
+        else{
+            profileBinding.tlCityAddress.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validateStreetAddress(String streetAddress){
+        if (streetAddress.isEmpty()) {
+            profileBinding.tlStreetAddress.setError("please enter street address");
+            return false;
+        }
+        else{
+            profileBinding.tlStreetAddress.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validateUserName(String userName){
+        if (userName.isEmpty()) {
+            profileBinding.tlUserName.setError("please enter street address");
+            return false;
+        }
+        else{
+            profileBinding.tlUserName.setError(null);
+            return true;
+        }
+    }
+
+
+
+
+
+
+
+
+    /*that was a end point of validation*/
     private void getChangeListner() {
         profileBinding.tvUserName.setText(sp.getString("name",""));
         profileBinding.etUserName.addTextChangedListener(new TextWatcher() {
@@ -475,4 +561,6 @@ public class ProfileUpdateActivity extends AppCompatActivity {
             gstNo1 = t.getGstNumber();
         editor.putString("gst",gstNo1).commit();
     }
+
+
 }
